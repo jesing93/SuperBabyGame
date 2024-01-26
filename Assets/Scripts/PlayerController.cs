@@ -8,10 +8,13 @@ public class PlayerController : MonoBehaviour
 {
     //COmponents
     private PlayerInput playerInput;
+    public GameObject playerHead;
 
     //Vars
     private float moveSpeed = 5;
-    public float rotSpeed = .5f;
+    private float minXRot = -90;
+    private float maxXRot = 90;
+    private float rotSpeed = .5f;
     private float curXRot = 0;
     private float mouseX;
     private Vector2 moveInput;
@@ -40,6 +43,7 @@ public class PlayerController : MonoBehaviour
         float mouseY = context.ReadValue<Vector2>().y;
 
         curXRot += -mouseY * rotSpeed;
+        curXRot = Mathf.Clamp(curXRot, minXRot, maxXRot);
     }
 
 
@@ -48,7 +52,8 @@ public class PlayerController : MonoBehaviour
         //Rotation)
         if(!(playerInput.Character.Rotation.ReadValue<Vector2>() == Vector2.zero))
         {
-            transform.eulerAngles = new Vector3(curXRot, transform.eulerAngles.y + (mouseX * rotSpeed), 0);
+            transform.eulerAngles = new Vector3(0, transform.eulerAngles.y + (mouseX * rotSpeed), 0);
+            playerHead.transform.localEulerAngles = new Vector3(curXRot, 0, 0);
         }
 
         //--Camera movement--
