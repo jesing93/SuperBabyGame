@@ -1,9 +1,8 @@
 using System.Collections;
 using System.Collections.Generic;
-using System.Threading;
 using UnityEngine;
+using UnityEngine.EventSystems;
 using UnityEngine.InputSystem;
-using static UnityEditor.Timeline.TimelinePlaybackControls;
 
 public class PlayerController : MonoBehaviour
 {
@@ -12,7 +11,7 @@ public class PlayerController : MonoBehaviour
 
     //Vars
     private float moveSpeed = 5;
-    public float rotSpeed = 1;
+    public float rotSpeed = .5f;
     private float curXRot = 0;
     private float mouseX;
     private Vector2 moveInput;
@@ -22,8 +21,9 @@ public class PlayerController : MonoBehaviour
         playerInput = new PlayerInput();
 
         //Assign this function to the input event
-        playerInput.Character.Move.performed += e => Move();
-        playerInput.Character.Rotation.performed += e => Rotate();
+        playerInput.Character.Move.performed += ctx => Move(ctx);
+        playerInput.Character.Move.canceled += ctx => Move(ctx);
+        playerInput.Character.Rotation.performed += ctx => Rotate(ctx);
 
         //Enable player input
         playerInput.Enable();
@@ -45,8 +45,11 @@ public class PlayerController : MonoBehaviour
 
     private void LateUpdate()
     {
-        //Rotation
-        transform.eulerAngles = new Vector3(curXRot, transform.eulerAngles.y + (mouseX * rotSpeed), 0);
+        //Rotation)
+        if(!(playerInput.Character.Rotation.ReadValue<Vector2>() == Vector2.zero))
+        {
+            transform.eulerAngles = new Vector3(curXRot, transform.eulerAngles.y + (mouseX * rotSpeed), 0);
+        }
 
         //--Camera movement--
         //Normalize direction
