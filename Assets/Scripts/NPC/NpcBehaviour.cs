@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AI;
 
-public class NewBehaviourScript : MonoBehaviour
+public class NpcBehaviour : MonoBehaviour
 {
     [SerializeField] private NpcData npcData;
     [SerializeField] private GameObject shelves;
@@ -22,6 +22,8 @@ public class NewBehaviourScript : MonoBehaviour
     private GameObject busyShelve;
     private bool followPlayer;
 
+    public NpcData NpcData { get => npcData; set => npcData = value; }
+
     private void Awake()
     {
         nextPoint = GetRandomNavmeshLocation(maxWalkingDistance);
@@ -30,7 +32,7 @@ public class NewBehaviourScript : MonoBehaviour
         {
             shelvesStopPoints.Add(stopPoint);
         }
-        agent.speed = npcData.Speed;
+        agent.speed = NpcData.Speed;
          
     }
     private void Update()
@@ -40,7 +42,7 @@ public class NewBehaviourScript : MonoBehaviour
 
     private void goToNextPoint()
     {
-        if (npcData.NpcType.Equals(NpcType.guard))
+        if (NpcData.NpcType.Equals(NpcType.guard))
         {
             if (followPlayer)
             {
@@ -59,7 +61,7 @@ public class NewBehaviourScript : MonoBehaviour
                 }
             }
         }
-        else if (npcData.NpcType.Equals(NpcType.elder))
+        else if (NpcData.NpcType.Equals(NpcType.elder))
         {
            
             if (followPlayer)

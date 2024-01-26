@@ -7,7 +7,8 @@ public enum NpcType
     guard,
     shopkeeper,
     elder,
-    client
+    woman,
+    man
 }
 [CreateAssetMenu(fileName = "New NPC Data", menuName = "NPC/Data")]
 

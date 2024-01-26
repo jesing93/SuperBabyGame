@@ -26,12 +26,16 @@ public class MenuManager : MonoBehaviour
         resolutionsDropdown.ClearOptions();
         qualityDropdown.ClearOptions();
         screenDropdown.ClearOptions();
+
+        //Add the screen options
         List<string> screenOptions = new List<string>();
         screenOptions.Add("FullScreen");
         screenOptions.Add("Borderless");
         screenOptions.Add("Windowed");
         screenDropdown.AddOptions(screenOptions);
 
+
+        //Add the quality options
         List<string> qualityOptions = new List<string>();
         qualityOptions.Add("Low");
         qualityOptions.Add("Medium");
@@ -54,6 +58,8 @@ public class MenuManager : MonoBehaviour
         resolutionsDropdown.AddOptions(resolutionOptions);
         resolutionsDropdown.value = currentResolution;
         resolutionsDropdown.RefreshShownValue();
+
+        ScreenMode();
     }
 
     //close the game
@@ -68,6 +74,10 @@ public class MenuManager : MonoBehaviour
     /// <param name="volume"></param>
     public void SetVolume(float volume)
     {
+        if (PlayerPrefs.HasKey("volume"))
+        {
+           volume = PlayerPrefs.GetFloat("volume");
+        }
         audioMixer.SetFloat("masterVolume", volume);
     }
 
@@ -77,26 +87,48 @@ public class MenuManager : MonoBehaviour
     /// <param name="fullScreen"></param>
     public void ScreenMode()
     {
-        int fullScreen = screenDropdown.value;
-        Debug.Log(fullScreen);
-        switch (fullScreen)
+        int fullScreen;
+        if (PlayerPrefs.HasKey("screenMode"))
         {
-            case 0:
-                Screen.fullScreenMode = FullScreenMode.ExclusiveFullScreen;
-                break;
-            case 1:
-                Screen.fullScreenMode = FullScreenMode.FullScreenWindow;
-                break;
-            case 2:
-                Screen.fullScreenMode = FullScreenMode.Windowed;
-                break;
+            fullScreen = PlayerPrefs.GetInt("screenMode");
         }
+        else
+        {
+            fullScreen = screenDropdown.value;
+            PlayerPrefs.SetInt("screenMode", fullScreen);
+        }
+        switch (fullScreen)
+            {
+                case 0:
+                    Screen.fullScreenMode = FullScreenMode.ExclusiveFullScreen;
+                    break;
+                case 1:
+                    Screen.fullScreenMode = FullScreenMode.FullScreenWindow;
+                    break;
+                case 2:
+                    Screen.fullScreenMode = FullScreenMode.Windowed;
+                    break;
+                default:
+                    Screen.fullScreenMode = FullScreenMode.ExclusiveFullScreen;
+                    break;
+            }    
+        
+       
     }
 
     public void SetQuality()
     {
         int quality = qualityDropdown.value;
-        Debug.Log(quality);
+
+        if (PlayerPrefs.HasKey("quality"))
+        {
+            quality = PlayerPrefs.GetInt("quality");
+        }
+        else
+        {
+            quality = qualityDropdown.value;
+            PlayerPrefs.SetInt("quality", quality);
+        }
         switch (quality)
         {
             case 0:
@@ -108,6 +140,9 @@ public class MenuManager : MonoBehaviour
             case 2:
                 QualitySettings.SetQualityLevel(5, true);
                 break;
+            default:
+                QualitySettings.SetQualityLevel(5, true);
+                break;
         }
     }
 
@@ -117,44 +152,11 @@ public class MenuManager : MonoBehaviour
     /// <param name="index">index of the selected resolution in the menu</param>
     public void SetResolution(int index)
     {
+        if (PlayerPrefs.HasKey("resolution"))
+        {
+            index = PlayerPrefs.GetInt("resolution");
+        }
         Screen.SetResolution(resolutions[index].width, resolutions[index].height, Screen.fullScreen);
     }
-    /// <summary>
-    /// show the controls panel
-    /// </summary>
-    public void OpenControlsMenu()
-    {
-        controlsPanel.SetActive(true);
-    }
-    /// <summary>
-    /// show the setting panel
-    /// </summary>
-    public void OpenSettingsMenu()
-    {
-        settingsPanel.SetActive(true);
-    }
-
-    public void CloseSettingsMenu()
-    {
-        settingsPanel.SetActive(false);
-    }
-
-    private void Update()
-    {
-        //pause or resume the game and open or close the ingame menu
-        if (Input.GetKeyDown(KeyCode.Escape) && SceneManager.GetActiveScene().buildIndex != 0)
-        {
-            if (!menu.activeSelf)
-            {
-                Time.timeScale = 0f;
-                menu.SetActive(true);
-            }
-            else
-            {
-                Time.timeScale = 1f;
-                menu.SetActive(false);
-            }
-
-        }
-    }
+    
 }
