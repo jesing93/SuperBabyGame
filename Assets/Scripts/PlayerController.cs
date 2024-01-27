@@ -46,6 +46,30 @@ public class PlayerController : MonoBehaviour
         curXRot = Mathf.Clamp(curXRot, minXRot, maxXRot);
     }
 
+    public void Interact(InputAction.CallbackContext context)
+    {
+        Ray ray = new(transform.position, new Vector3(Camera.main.transform.forward.x, playerHead.transform.forward.y, 0));
+        RaycastHit hit;
+        Debug.DrawRay(transform.position, PlayerController.instance.transform.position - transform.position);
+        if (Physics.Raycast(ray, out hit, 5f, groundLayer | playerLayer))
+        {
+            if (hit.collider.CompareTag("Player"))
+            {
+                playerInSight = true;
+                //Set last sight time + sight delay
+                lastPlayerSight = Time.time + 3f;
+            }
+            else
+            {
+                playerInSight = false;
+            }
+        }
+        else
+        {
+            playerInSight = false;
+        }
+    }
+
 
     private void LateUpdate()
     {
