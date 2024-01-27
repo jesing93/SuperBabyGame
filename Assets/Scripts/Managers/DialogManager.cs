@@ -1,10 +1,9 @@
 
 using TMPro;
-using TreeEditor;
-using UnityEditor.Search;
+
 using UnityEngine;
 using UnityEngine.UI;
-using static TMPro.SpriteAssetUtilities.TexturePacker_JsonArray;
+
 
 public class DialogManager : MonoBehaviour
 {
