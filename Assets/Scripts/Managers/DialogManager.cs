@@ -68,11 +68,8 @@ public class DialogManager : MonoBehaviour
             firstOption.GetComponent<Button>().onClick.AddListener(CloseDialog);
             ActiveOptions();
         }
-       
         else
         {
-
-
             if (npcBehaviour.PlayerIsAggressive)
             {
                 npcPhrase.GetComponent<TMP_Text>().text = "¡Pero tio!";

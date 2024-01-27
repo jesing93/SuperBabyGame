@@ -191,6 +191,14 @@ public class BabyManager : MonoBehaviour
 
     public void CleanBaby()
     {
+        firstOption.GetComponent<Button>().onClick.RemoveAllListeners();
+        secondOption.GetComponent<Button>().onClick.RemoveAllListeners();
+        thirdOption.GetComponent<Button>().onClick.RemoveAllListeners();
+        firstOption.GetComponentInChildren<TMP_Text>().text = "";
+        secondOption.GetComponentInChildren<TMP_Text>().text = "";
+        thirdOption.GetComponentInChildren<TMP_Text>().text = "";
+        secondOption.SetActive(false);
+        thirdOption.SetActive(false);
         //TODO sonido cambiar pañal y fade to black
         if (toiletNeed < 100)
         {
@@ -245,6 +253,8 @@ public class BabyManager : MonoBehaviour
     }
     public void OpenBabyOptions()
     {
+        secondOption.SetActive(true);
+        thirdOption.SetActive(true);
         Cursor.visible = true;
         Cursor.lockState = CursorLockMode.None;
         player.GetComponent<PlayerController>().IsOnDialog = true;
