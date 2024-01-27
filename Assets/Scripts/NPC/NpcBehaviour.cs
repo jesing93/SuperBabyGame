@@ -195,7 +195,8 @@ public class NpcBehaviour : MonoBehaviour
 
     private void OnCollisionEnter(Collision collision)
     {
-        if (collision.gameObject.tag == "Product" && npcData.IsStuneable)
+        Debug.Log(collision.gameObject.GetComponent<Rigidbody>().velocity);
+        if (collision.gameObject.tag == "Product" && npcData.IsStuneable )
         {
             npcStunned = true;
             if (isStoppedInShelve)
