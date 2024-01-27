@@ -95,7 +95,10 @@ public class PlayerController : MonoBehaviour
             else if (hit.collider.CompareTag("Baby"))
             {
 
-                hit.collider.GetComponent<BabyManager>().OpenBabyOptions();
+                if (hit.collider.GetComponent<BabyManager>().CanTalk)
+                {
+                    hit.collider.GetComponent<BabyManager>().OpenBabyOptions();
+                }
             }
             else
             {

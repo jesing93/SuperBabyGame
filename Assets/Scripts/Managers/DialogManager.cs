@@ -304,6 +304,49 @@ public class DialogManager : MonoBehaviour
             npcBehaviour.GuardTalkedToPlayer = false;
             ActiveOptions();
         }
+        else if (BabyManager.Instance.AngryTimer>=15f)
+        {
+            if (step == 0)
+            {
+                npcPhrase.GetComponent<TMP_Text>().text = "Señor su hijo parece no estar contento.";
+                yield return new WaitForSeconds(2f);
+                firstOption.GetComponentInChildren<TMP_Text>().text = "1) Perdón pero tengo prisa.";
+                secondOption.GetComponentInChildren<TMP_Text>().text = "2) Si, perdón.";
+                firstOption.GetComponent<Button>().onClick.AddListener(delegate { StartCoroutine(GuardDialog(1, 1)); });
+                secondOption.GetComponent<Button>().onClick.AddListener(delegate { StartCoroutine(GuardDialog(1, 2)); });
+                npcBehaviour.GuardTalkedToPlayer = false;
+                ActiveOptions();
+            }
+            if (step == 1)
+            {
+                if (option == 1) {
+                    npcPhrase.GetComponent<TMP_Text>().text = "Me da igual, o lo cuidas o te llevo preso.";
+                    yield return new WaitForSeconds(2f);
+                    firstOption.GetComponentInChildren<TMP_Text>().text = "1) No quiero problemas.";
+                    firstOption.GetComponent<Button>().onClick.AddListener(delegate { StartCoroutine(GuardDialog(2, 1)); });
+                    npcBehaviour.GuardTalkedToPlayer = false;
+                    ActiveOptions();
+                }
+                else
+                {
+                    npcPhrase.GetComponent<TMP_Text>().text = "Muy bien, que no vuelva a ocurrir";
+                    yield return new WaitForSeconds(2f);
+                    firstOption.GetComponentInChildren<TMP_Text>().text = "1) Marcharte.";
+                    firstOption.GetComponent<Button>().onClick.AddListener(CloseDialog);
+                    npcBehaviour.GuardTalkedToPlayer = false;
+                    ActiveOptions();
+                }
+            }
+            if (step == 2)
+            {
+                npcPhrase.GetComponent<TMP_Text>().text = "Muy bien, que no vuelva a ocurrir";
+                yield return new WaitForSeconds(2f);
+                firstOption.GetComponentInChildren<TMP_Text>().text = "1) Marcharte.";
+                firstOption.GetComponent<Button>().onClick.AddListener(CloseDialog);
+                npcBehaviour.GuardTalkedToPlayer = false;
+                ActiveOptions();
+            }
+            }
         else
         {
             if(npcBehaviour.AgrresionCount >= npcBehaviour.MaxAggressionTimes)

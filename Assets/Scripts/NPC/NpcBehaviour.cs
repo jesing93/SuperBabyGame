@@ -28,6 +28,7 @@ public class NpcBehaviour : MonoBehaviour
     private DialogManager dialogManager;
     private bool stopCry;
     private bool npcStunned;
+    private float lastReprimend;
 
     public NpcData NpcData { get => npcData; set => npcData = value; }
     public Vector3 NextPoint { get => nextPoint; set => nextPoint = value; }
@@ -48,11 +49,12 @@ public class NpcBehaviour : MonoBehaviour
             shelvesStopPoints.Add(stopPoint);
         }
         agent.speed = NpcData.Speed;
-         
+        lastReprimend = 60;
     }
     private void Update()
     {   
-        goToNextPoint();  
+        goToNextPoint();
+        lastReprimend += Time.deltaTime;
     }
 
     private void goToNextPoint()
@@ -64,13 +66,19 @@ public class NpcBehaviour : MonoBehaviour
             {
                 if (!dialogManager.GuardIsCrying)
                 {
-                    if (AgrresionCount>= MaxAggressionTimes)
+                    if (AgrresionCount>= MaxAggressionTimes || BabyManager.Instance.AngryTimer >= 15f && lastReprimend >= 60f)
                     {
                         NextPoint = player.transform.position;
-                       
                     }
+                    
                     if (!agent.pathPending && agent.remainingDistance < 3.5f)
                     {
+                        if (BabyManager.Instance.AngryTimer >= 15f && lastReprimend>=60f)
+                        {
+                            dialogManager.OpenDialog();
+                            lastReprimend = 0;
+                        }
+                        else
                         if (AgrresionCount >= MaxAggressionTimes && !GuardTalkedToPlayer)
                         {
                             dialogManager.OpenDialog();

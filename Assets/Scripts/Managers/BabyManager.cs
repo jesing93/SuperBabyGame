@@ -24,6 +24,7 @@ public class BabyManager : MonoBehaviour
     [SerializeField] private GameObject player;
     [SerializeField] private GameObject fadeBlack;
 
+    public static BabyManager Instance;
     private List<string> desiredObjectList;
     private StateMachine brain;
     private Animator animator;
@@ -35,13 +36,16 @@ public class BabyManager : MonoBehaviour
     private float timer;
     private bool hasRequestedItem;
     private string desiredObject;
-
-
+    private bool canTalk = true;
+    private float angryTimer;
     public float Happiness { get => happiness; set => happiness = value; }
     public int NormalHappinessDecreaseRatio { get => normalHappinessDecreaseRatio; set => normalHappinessDecreaseRatio = value; }
+    public bool CanTalk { get => canTalk; set => canTalk = value; }
+    public float AngryTimer { get => angryTimer; set => angryTimer = value; }
 
     private void Awake()
     {
+        Instance = this;
         Happiness = 50f;
         toiletNeed = Random.Range(0, 50);
         brain = GetComponent<StateMachine>();
@@ -52,9 +56,22 @@ public class BabyManager : MonoBehaviour
 
     private void Update()
     {
-        ReduceHappiness();
-        IncreaseToiletNeed();
-        SelectState();
+        if (happiness >0)
+        {
+            ReduceHappiness();
+        }
+        if (toiletNeed < 100)
+        {
+            IncreaseToiletNeed();
+        }
+        if (happiness < 20)
+        {
+            AngryTimer += Time.deltaTime;
+        }
+        else
+        {
+            AngryTimer = 0;
+        }
         timer += Time.deltaTime;
         if (wantItemsTiming <= timer && !hasRequestedItem)
         {
@@ -70,7 +87,7 @@ public class BabyManager : MonoBehaviour
 
     private void ReduceHappiness()
     {
-        Happiness += Time.deltaTime / happinessDecreaseRatio;
+        Happiness -= Time.deltaTime / happinessDecreaseRatio;
     }
 
     private void SelectState()
@@ -78,19 +95,21 @@ public class BabyManager : MonoBehaviour
         if (Happiness >= 80)
         {
             brain.PushState(OnVeryHappy, OnVeryHappyEnter, OnVeryHappyExit);
-        }
+        }else
         if (Happiness > 60 && Happiness < 80)
         {
             brain.PushState(OnHappy, OnHappyEnter, OnHappyExit);
-        }
+        }else
         if (Happiness > 40 && Happiness < 60)
         {
             brain.PushState(OnDefault,null, null);
         }
+        else
         if (Happiness > 20 && Happiness <= 40 )
         {
             brain.PushState(OnSad, OnSadEnter, OnSadExit);
         }
+        else
         if (Happiness <= 20)
         {
             brain.PushState(OnAngry, OnAngryEnter, OnAngryExit);
@@ -115,11 +134,13 @@ public class BabyManager : MonoBehaviour
     private void OnAngry()
     {
         //TODO sonido furioso
+        SelectState();
     }
 
     private void OnDefault()
     {
         //TODO sonido default
+        SelectState();
     }
 
     private void OnSadExit()
@@ -132,6 +153,7 @@ public class BabyManager : MonoBehaviour
         {
             ThrowItem();
         }
+        SelectState();
         //TODO sonido triste 
     }
 
@@ -152,6 +174,7 @@ public class BabyManager : MonoBehaviour
     }
     private void OnCry()
     {
+        SelectState();
         happinessDecreaseRatio = IncreasedHappinessDecreaseRatio;
         //TODO  sonido llorar
     }
@@ -166,6 +189,7 @@ public class BabyManager : MonoBehaviour
 
     private void OnVeryHappy()
     {
+        SelectState();
         //TODO sonido muy feliz
     }
     private void OnHappyExit()
@@ -180,7 +204,8 @@ public class BabyManager : MonoBehaviour
 
     private void OnHappy()
     {
-       //TODO sonido feliz
+        //TODO sonido feliz
+        SelectState();
     }
 
     public void Entertain()
@@ -211,15 +236,12 @@ public class BabyManager : MonoBehaviour
             StartCoroutine("FadeBlack");
             toiletNeed = 0;
             happinessDecreaseRatio = normalHappinessDecreaseRatio;
-            npcPhrase.GetComponent<TMP_Text>().text = "El bebe está limpio";
-            firstOption.GetComponentInChildren<TMP_Text>().text = "1) Marcharte.";
-            firstOption.GetComponent<Button>().onClick.AddListener(CloseDialog);
         }
         
     }
     private void ThrowItem()
     {
-        /*GameObject objectThrown = Inventory.Instance.RemoveItemFromInventory();
+        GameObject objectThrown = Inventory.Instance.RemoveItemFromInventory();
         if (objectThrown != null)
         {
             //TODO animacion lanzar objeto y lanzar el objeto
@@ -232,7 +254,7 @@ public class BabyManager : MonoBehaviour
         }
         canThrowItem = false;
         Invoke("AvailThrowItem", 20f);
-        */
+        
     }
     void AvailThrowItem()
     {
@@ -253,6 +275,7 @@ public class BabyManager : MonoBehaviour
     }
     public void OpenBabyOptions()
     {
+        CanTalk = false;
         secondOption.SetActive(true);
         thirdOption.SetActive(true);
         Cursor.visible = true;
@@ -273,22 +296,30 @@ public class BabyManager : MonoBehaviour
         player.GetComponent<PlayerController>().IsOnDialog = false;
         Cursor.lockState = CursorLockMode.Locked;
         Cursor.visible = false;
+        Invoke("ActivateCanTalk", 2f);
     }
-
+    void ActivateCanTalk()
+    {
+        CanTalk = true;
+    }
     private IEnumerator FadeBlack()
     {
         fadeBlack.SetActive(true);
         for (float i = 0; i <= 1; i += 0.05f)
         {
             fadeBlack.GetComponent<Image>().color = new Color(0, 0, 0, i);
-            yield return new WaitForSeconds(0.02f);
+            yield return new WaitForSeconds(0.05f);
         }
-        yield return new WaitForSeconds(1f);
+        fadeBlack.GetComponent<Image>().color = new Color(0, 0, 0, 1);
+        yield return new WaitForSeconds(1.5f);
         for (float i = 1; i > 0; i -= 0.05f)
         {
             fadeBlack.GetComponent<Image>().color = new Color(0, 0, 0, i);
-            yield return new WaitForSeconds(0.02f);
+            yield return new WaitForSeconds(0.05f);
         }
+        npcPhrase.GetComponent<TMP_Text>().text = "El bebe está limpio";
+        firstOption.GetComponentInChildren<TMP_Text>().text = "1) Marcharte.";
+        firstOption.GetComponent<Button>().onClick.AddListener(CloseDialog);
         fadeBlack.SetActive(false);
     }
 }
