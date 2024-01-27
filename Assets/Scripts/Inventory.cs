@@ -8,11 +8,20 @@ public class Inventory : MonoBehaviour
 {
     private Dictionary<ProductPreset, ShoppingItem> ShoppingList;
     public static Inventory Instance;
+    private int itemsNeeded = 0;
+    private int currentItems = 0;
+    public List<ProductPreset> itemPresets;
+    private int shoppingListLength = 10;
 
     private void Awake()
     {
         Instance = this;
         ShoppingList = new();
+        List<ProductPreset> shuffledList = itemPresets.OrderBy(x => Random.value).ToList().ConvertAll(input => input as ProductPreset);
+        for (int i = 0; i < shoppingListLength; i++)
+        {
+            AddShoppingItem(shuffledList[i]);
+        }
     }
 
     /// <summary>
@@ -32,6 +41,7 @@ public class Inventory : MonoBehaviour
         {
             ShoppingList.Add(item, new ShoppingItem(0, quantity));
         }
+        itemsNeeded++;
     }
 
     /// <summary>
@@ -48,6 +58,15 @@ public class Inventory : MonoBehaviour
             currentItem.Items.Add(itemObject);
             ShoppingList[item] = currentItem;
             Debug.Log("Ahora tienes " + currentItem.Current + " de " + currentItem.Needed + " " + item.productName);
+            if(currentItem.Current <= currentItem.Needed && currentItem.Needed > 0)
+            {
+                currentItems++;
+                if(currentItems == itemsNeeded)
+                {
+                    Debug.Log("Win");
+                    //TODO: Call Gamemanager.Win
+                }
+            }
         }
         else
         {
@@ -89,6 +108,10 @@ public class Inventory : MonoBehaviour
                     //Bebé lanza el objeto
                     ShoppingItem tempItem = randomItem.Value;
                     tempItem.Current--;
+                    if(tempItem.Current < tempItem.Needed)
+                    {
+                        currentItems--;
+                    }
                     int outItemId = Random.Range(0, tempItem.Items.Count);
                     GameObject outItem = tempItem.Items[outItemId];
                     tempItem.Items.RemoveAt(outItemId);
@@ -107,6 +130,10 @@ public class Inventory : MonoBehaviour
             {
                 ShoppingItem currentItem = ShoppingList[item];
                 currentItem.Current--;
+                if(currentItem.Current < currentItem.Needed)
+                {
+                    currentItems--;
+                }
                 int outItemId = Random.Range(0, currentItem.Items.Count);
                 GameObject outItem = currentItem.Items[outItemId];
                 currentItem.Items.RemoveAt(outItemId);
