@@ -13,6 +13,6 @@ MonoBehaviour:
   m_Name: Client
   m_EditorClassIdentifier: 
   NpcName: Npc 1
-  npcType: 2
+  npcType: 4
   speed: 3
   isStuneable: 1

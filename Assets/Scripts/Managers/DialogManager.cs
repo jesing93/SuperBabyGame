@@ -19,8 +19,9 @@ public class DialogManager : MonoBehaviour
     private bool guardIsCrying;
     private NpcBehaviour npcBehaviour;
     private bool hasAskedForHelp = false;
-
+    private bool canTalk=true;
     public bool GuardIsCrying { get => guardIsCrying; set => guardIsCrying = value; }
+    public bool CanTalk { get => canTalk; set => canTalk = value; }
 
     private void Awake()
     {
@@ -28,6 +29,7 @@ public class DialogManager : MonoBehaviour
     }
     public void OpenDialog()
     {
+        canTalk = false;
         GetComponent<NavMeshAgent>().speed = 0;
         Cursor.visible = true;
         Cursor.lockState = CursorLockMode.None;
@@ -58,162 +60,202 @@ public class DialogManager : MonoBehaviour
     private IEnumerator WomanDialog(int step, int option)
     {
         ResetDialogOptions();
-
-        if(npcBehaviour.PlayerIsAggressive){
-            npcPhrase.GetComponent<TMP_Text>().text = "¡Pero tio!";
-        }else{
-        if (step == 0)
+        if (!npcBehaviour.IsStoppedInShelve)
         {
-            if ((int)Random.Range(0, 2) == 0)
-            {
-                npcPhrase.GetComponent<TMP_Text>().text = "Ahora mismo estoy yo mirando.";
-            }
-            else
-            {
-                npcPhrase.GetComponent<TMP_Text>().text = "No me interesa.";
-            }
-            yield return new WaitForSeconds(2f);
-            firstOption.GetComponentInChildren<TMP_Text>().text = "1) Pero...";
-            secondOption.GetComponentInChildren<TMP_Text>().text = "2) Marcharte.";
-            firstOption.GetComponent<Button>().onClick.AddListener(delegate { StartCoroutine(WomanDialog(1, 1)); });
-            secondOption.GetComponent<Button>().onClick.AddListener(CloseDialog);
-            ActiveOptions();
-        }
-        if (step == 1)
-        {
-            if ((int)Random.Range(0, 2) == 0)
-            {
-                npcPhrase.GetComponent<TMP_Text>().text = "Venga, vayase.";
-            }
-            else
-            {
-                npcPhrase.GetComponent<TMP_Text>().text = "No haber tenido hijos.";
-            }
+            npcPhrase.GetComponent<TMP_Text>().text = "¡Aparta, aparta, aparta!"; 
             yield return new WaitForSeconds(2f);
             firstOption.GetComponentInChildren<TMP_Text>().text = "1) Marcharte.";
             firstOption.GetComponent<Button>().onClick.AddListener(CloseDialog);
             ActiveOptions();
         }
-    }
+       
+        else
+        {
+
+
+            if (npcBehaviour.PlayerIsAggressive)
+            {
+                npcPhrase.GetComponent<TMP_Text>().text = "¡Pero tio!";
+            }
+            else
+            {
+                if (step == 0)
+                {
+                    if ((int)Random.Range(0, 2) == 0)
+                    {
+                        npcPhrase.GetComponent<TMP_Text>().text = "Ahora mismo estoy yo mirando.";
+                    }
+                    else
+                    {
+                        npcPhrase.GetComponent<TMP_Text>().text = "No me interesa.";
+                    }
+                    yield return new WaitForSeconds(2f);
+                    firstOption.GetComponentInChildren<TMP_Text>().text = "1) Pero...";
+                    secondOption.GetComponentInChildren<TMP_Text>().text = "2) Marcharte.";
+                    firstOption.GetComponent<Button>().onClick.AddListener(delegate { StartCoroutine(WomanDialog(1, 1)); });
+                    secondOption.GetComponent<Button>().onClick.AddListener(CloseDialog);
+                    ActiveOptions();
+                }
+                if (step == 1)
+                {
+                    if ((int)Random.Range(0, 2) == 0)
+                    {
+                        npcPhrase.GetComponent<TMP_Text>().text = "Venga, vayase.";
+                    }
+                    else
+                    {
+                        npcPhrase.GetComponent<TMP_Text>().text = "No haber tenido hijos.";
+                    }
+                    yield return new WaitForSeconds(2f);
+                    firstOption.GetComponentInChildren<TMP_Text>().text = "1) Marcharte.";
+                    firstOption.GetComponent<Button>().onClick.AddListener(CloseDialog);
+                    ActiveOptions();
+                }
+            }
+        }
     }
 
     private IEnumerator ManDialog(int step, int option)
     {
         ResetDialogOptions();
-        if (npcBehaviour.PlayerIsAggressive)
+        if (!npcBehaviour.IsStoppedInShelve)
         {
-            npcPhrase.GetComponent<TMP_Text>().text = "¡Marisa!";
-        }
-        else
-        {
-            if (step == 0)
-            {
-                if ((int)Random.Range(0, 2) == 0)
-                {
-                    npcPhrase.GetComponent<TMP_Text>().text = "Otra noche solo, y Marisa no me deja ver a los niños.";
-                }
-                else
-                {
-                    npcPhrase.GetComponent<TMP_Text>().text = "Que bien es no tener hijos.";
-                }
-                yield return new WaitForSeconds(2f);
-                firstOption.GetComponentInChildren<TMP_Text>().text = "1) Disculpe.";
-                secondOption.GetComponentInChildren<TMP_Text>().text = "2) Marcharte.";
-                firstOption.GetComponent<Button>().onClick.AddListener(delegate { StartCoroutine(ManDialog(1, 1)); });
-                secondOption.GetComponent<Button>().onClick.AddListener(CloseDialog);
-                ActiveOptions();
-            }
-            if (step == 1)
-            {
-                if ((int)Random.Range(0, 2) == 0)
-                {
-                    npcPhrase.GetComponent<TMP_Text>().text = "No pienso moverme, puedo tomarme todo el tiempo del mundo.";
-                }
-                else
-                {
-                    npcPhrase.GetComponent<TMP_Text>().text = "Mi mujer es mala persona, no me deja ver a los niños.";
-                }
-                yield return new WaitForSeconds(2f);
-                firstOption.GetComponentInChildren<TMP_Text>().text = "1) Es que mi hijo...";
-                secondOption.GetComponentInChildren<TMP_Text>().text = "2) Marcharte.";
-                firstOption.GetComponent<Button>().onClick.AddListener(delegate { StartCoroutine(ManDialog(2, 1)); });
-                secondOption.GetComponent<Button>().onClick.AddListener(CloseDialog);
-                ActiveOptions();
-            }
-            if (step == 2)
-            {
-                if ((int)Random.Range(0, 2) == 0)
-                {
-                    npcPhrase.GetComponent<TMP_Text>().text = "Que se los hubiera llevado su madre. Los míos los tiene mi mujer y estoy muy feliz.";
-                }
-                else
-                {
-                    npcPhrase.GetComponent<TMP_Text>().text = "Menudo planchabragas.";
-                }
-                yield return new WaitForSeconds(2f);
-                firstOption.GetComponentInChildren<TMP_Text>().text = "1) Me gustaría que no nos faltase al respeto.";
-                secondOption.GetComponentInChildren<TMP_Text>().text = "2) Marcharte.";
-                firstOption.GetComponent<Button>().onClick.AddListener(delegate { StartCoroutine(ManDialog(3, 1)); });
-                secondOption.GetComponent<Button>().onClick.AddListener(CloseDialog);
-                ActiveOptions();
-            }
-            if (step == 3)
-            {
-                npcPhrase.GetComponent<TMP_Text>().text = "Marisa... ay Marisa.";
-            }
+            npcPhrase.GetComponent<TMP_Text>().text = "Esta noche toca cenar pizza";
             yield return new WaitForSeconds(2f);
             firstOption.GetComponentInChildren<TMP_Text>().text = "1) Marcharte.";
             firstOption.GetComponent<Button>().onClick.AddListener(CloseDialog);
             ActiveOptions();
+        }
+
+        else
+        {
+            if (npcBehaviour.PlayerIsAggressive)
+            {
+                npcPhrase.GetComponent<TMP_Text>().text = "¡Marisa!";
+            }
+            else
+            {
+                if (step == 0)
+                {
+                    if ((int)Random.Range(0, 2) == 0)
+                    {
+                        npcPhrase.GetComponent<TMP_Text>().text = "Otra noche solo, y Marisa no me deja ver a los niños.";
+                    }
+                    else
+                    {
+                        npcPhrase.GetComponent<TMP_Text>().text = "Que bien es no tener hijos.";
+                    }
+                    yield return new WaitForSeconds(2f);
+                    firstOption.GetComponentInChildren<TMP_Text>().text = "1) Disculpe.";
+                    secondOption.GetComponentInChildren<TMP_Text>().text = "2) Marcharte.";
+                    firstOption.GetComponent<Button>().onClick.AddListener(delegate { StartCoroutine(ManDialog(1, 1)); });
+                    secondOption.GetComponent<Button>().onClick.AddListener(CloseDialog);
+                    ActiveOptions();
+                }
+                if (step == 1)
+                {
+                    if ((int)Random.Range(0, 2) == 0)
+                    {
+                        npcPhrase.GetComponent<TMP_Text>().text = "No pienso moverme, puedo tomarme todo el tiempo del mundo.";
+                    }
+                    else
+                    {
+                        npcPhrase.GetComponent<TMP_Text>().text = "Mi mujer es mala persona, no me deja ver a los niños.";
+                    }
+                    yield return new WaitForSeconds(2f);
+                    firstOption.GetComponentInChildren<TMP_Text>().text = "1) Es que mi hijo...";
+                    secondOption.GetComponentInChildren<TMP_Text>().text = "2) Marcharte.";
+                    firstOption.GetComponent<Button>().onClick.AddListener(delegate { StartCoroutine(ManDialog(2, 1)); });
+                    secondOption.GetComponent<Button>().onClick.AddListener(CloseDialog);
+                    ActiveOptions();
+                }
+                if (step == 2)
+                {
+                    if ((int)Random.Range(0, 2) == 0)
+                    {
+                        npcPhrase.GetComponent<TMP_Text>().text = "Que se los hubiera llevado su madre. Los míos los tiene mi mujer y estoy muy feliz.";
+                    }
+                    else
+                    {
+                        npcPhrase.GetComponent<TMP_Text>().text = "Menudo planchabragas.";
+                    }
+                    yield return new WaitForSeconds(2f);
+                    firstOption.GetComponentInChildren<TMP_Text>().text = "1) Me gustaría que no nos faltase al respeto.";
+                    secondOption.GetComponentInChildren<TMP_Text>().text = "2) Marcharte.";
+                    firstOption.GetComponent<Button>().onClick.AddListener(delegate { StartCoroutine(ManDialog(3, 1)); });
+                    secondOption.GetComponent<Button>().onClick.AddListener(CloseDialog);
+                    ActiveOptions();
+                }
+                if (step == 3)
+                {
+                    npcPhrase.GetComponent<TMP_Text>().text = "Marisa... ay Marisa.";
+                }
+                yield return new WaitForSeconds(2f);
+                firstOption.GetComponentInChildren<TMP_Text>().text = "1) Marcharte.";
+                firstOption.GetComponent<Button>().onClick.AddListener(CloseDialog);
+                ActiveOptions();
+            }
         }
     }
 
     private IEnumerator ElderDialog(int step, int option)
     {
         ResetDialogOptions();
-        if(npcBehaviour.PlayerIsAggressive)
+        if (npcBehaviour.IsStoppedInShelve)
         {
-            npcPhrase.GetComponent<TMP_Text>().text = "Que maleducado, voy a sacar la chancla, oiga.";
-        }else{
-            if (step == 0)
+            npcPhrase.GetComponent<TMP_Text>().text = "¿A quien no le va a gustar un imperio Romano?";
+            yield return new WaitForSeconds(2f);
+            firstOption.GetComponentInChildren<TMP_Text>().text = "1) Marcharte.";
+            firstOption.GetComponent<Button>().onClick.AddListener(CloseDialog);
+            ActiveOptions();
+        }
+
+        else
+        {
+            if (npcBehaviour.PlayerIsAggressive)
             {
-                npcPhrase.GetComponent<TMP_Text>().text = "Que niño más mono. A mi nieta le gusta eso.";
-                yield return new WaitForSeconds(2f);
-                firstOption.GetComponentInChildren<TMP_Text>().text = "1) Señora, necesito coger una cosa.";
-                secondOption.GetComponentInChildren<TMP_Text>().text = "2) Marcharte.";
-                firstOption.GetComponent<Button>().onClick.AddListener(delegate { StartCoroutine(ElderDialog(1, 1)); });
-                secondOption.GetComponent<Button>().onClick.AddListener(CloseDialog);
-                ActiveOptions();
+                npcPhrase.GetComponent<TMP_Text>().text = "Que maleducado, voy a sacar la chancla, oiga.";
             }
-            if (step == 1)
+            else
             {
-                if ((int)Random.Range(0, 2) == 0) { 
-                    npcPhrase.GetComponent<TMP_Text>().text = "El que se va a Sevilla pierde su sitio, así que voy a tomar esto que le gusta a mi nieta.";
-                }
-                else 
+                if (step == 0)
                 {
-                    npcPhrase.GetComponent<TMP_Text>().text = "Es que estoy antes, quiero coger esto que tanto me gusta.A mi nieta también le encanta, ay a ver si me ayuda a buscarlo que parece muy amable.";
+                    npcPhrase.GetComponent<TMP_Text>().text = "Que niño más mono. A mi nieta le gusta eso.";
+                    yield return new WaitForSeconds(2f);
+                    firstOption.GetComponentInChildren<TMP_Text>().text = "1) Señora, necesito coger una cosa.";
+                    firstOption.GetComponent<Button>().onClick.AddListener(delegate { StartCoroutine(ElderDialog(1, 1)); });
+                    ActiveOptions();
                 }
-                yield return new WaitForSeconds(2f);
-                firstOption.GetComponentInChildren<TMP_Text>().text = "1) Disculpe pero...";
-                secondOption.GetComponentInChildren<TMP_Text>().text = "2) Marcharte.";
-                firstOption.GetComponent<Button>().onClick.AddListener(delegate { StartCoroutine(ElderDialog(2, 1)); });
-                secondOption.GetComponent<Button>().onClick.AddListener(CloseDialog);
-                ActiveOptions();
-            }
-            if(step==2) {
-                if ((int)Random.Range(0, 2) == 0)
+                if (step == 1)
                 {
-                    npcPhrase.GetComponent<TMP_Text>().text = "Perdonado, ahora ayudeme que se le ve muy fuerte.";
+                    if ((int)Random.Range(0, 2) == 0)
+                    {
+                        npcPhrase.GetComponent<TMP_Text>().text = "El que se va a Sevilla pierde su sitio, así que voy a tomar esto que le gusta a mi nieta.";
+                    }
+                    else
+                    {
+                        npcPhrase.GetComponent<TMP_Text>().text = "Es que estoy antes, quiero coger esto que tanto me gusta.A mi nieta también le encanta, ay a ver si me ayuda a buscarlo que parece muy amable.";
+                    }
+                    yield return new WaitForSeconds(2f);
+                    firstOption.GetComponentInChildren<TMP_Text>().text = "1) Disculpe pero...";
+                    firstOption.GetComponent<Button>().onClick.AddListener(delegate { StartCoroutine(ElderDialog(2, 1)); });
+                    ActiveOptions();
                 }
-                else
+                if (step == 2)
                 {
-                    npcPhrase.GetComponent<TMP_Text>().text = "¿Sabe que mi nieta está en sexto de primaria? Sí, es una niña muy buena, antes iba a la universidad con otros niños pero se ha dejado el pelo largo, se ha cambiado el nombre y ahora enseña a los niños.";
+                    if ((int)Random.Range(0, 2) == 0)
+                    {
+                        npcPhrase.GetComponent<TMP_Text>().text = "Perdonado, ahora ayudeme que se le ve muy fuerte.";
+                    }
+                    else
+                    {
+                        npcPhrase.GetComponent<TMP_Text>().text = "¿Sabe que mi nieta está en sexto de primaria? Sí, es una niña muy buena, antes iba a la universidad con otros niños pero se ha dejado el pelo largo, se ha cambiado el nombre y ahora enseña a los niños.";
+                    }
+                    yield return new WaitForSeconds(2f);
+                    firstOption.GetComponentInChildren<TMP_Text>().text = "1) Marcharte.";
+                    firstOption.GetComponent<Button>().onClick.AddListener(CloseDialog);
+                    ActiveOptions();
                 }
-                yield return new WaitForSeconds(2f);
-                firstOption.GetComponentInChildren<TMP_Text>().text = "1) Marcharte.";
-                firstOption.GetComponent<Button>().onClick.AddListener(CloseDialog);
-                ActiveOptions();
             }
         }
     }
@@ -232,48 +274,20 @@ public class DialogManager : MonoBehaviour
                 npcPhrase.GetComponent<TMP_Text>().text = "Se ha quedado buena tarde.";
             }
             yield return new WaitForSeconds(2f);
-            firstOption.GetComponentInChildren<TMP_Text>().text = "1) No encuentro a mi hijo.";
-            secondOption.GetComponentInChildren<TMP_Text>().text = "2) No se donde está este producto.";
-            thirdOption.GetComponentInChildren<TMP_Text>().text = "3) No, todo bien.";
+            firstOption.GetComponentInChildren<TMP_Text>().text = "1) No se donde está este producto.";
+            secondOption.GetComponentInChildren<TMP_Text>().text = "2) No, todo bien.";
             firstOption.GetComponent<Button>().onClick.AddListener(delegate { StartCoroutine(ShopkeeperDialog(1, 1)); });
-            secondOption.GetComponent<Button>().onClick.AddListener(delegate { StartCoroutine(ShopkeeperDialog(1, 2)); });
-            thirdOption.GetComponent<Button>().onClick.AddListener(CloseDialog);
+            secondOption.GetComponent<Button>().onClick.AddListener(CloseDialog);
             ActiveOptions();
         }
         if(step == 1)
         {
-            if(option == 1)
-            {
-                if (hasAskedForHelp)
-                {
-                    if ((int)Random.Range(0, 2) == 0)
-                    {
-                        npcPhrase.GetComponent<TMP_Text>().text = "¿Otra vez? Vamos a buscarle.";
-                    }
-                    else
-                    {
-                        npcPhrase.GetComponent<TMP_Text>().text = "Ains, mucho estrés ¿Eh?";
-                    }
-                }
-                else
-                {
-                    npcPhrase.GetComponent<TMP_Text>().text = "¡Vamos a buscarle!";
-                }
-                yield return new WaitForSeconds(2f);
-                firstOption.GetComponentInChildren<TMP_Text>().text = "1) Marcharte.";
-                firstOption.GetComponent<Button>().onClick.AddListener(CloseDialog);
-                ActiveOptions();
-                // TODO Guiar hasta el carro
-            }
-            else if(option == 2)
-            {
                 npcPhrase.GetComponent<TMP_Text>().text = "Está aquí. Sígame.";
                 yield return new WaitForSeconds(2f);
                 firstOption.GetComponentInChildren<TMP_Text>().text = "1) Marcharte.";
                 firstOption.GetComponent<Button>().onClick.AddListener(CloseDialog);
                 ActiveOptions();
                 // TODO Guiar hasta siguiente objeto de la lista
-            }
         }
 
     }
@@ -294,6 +308,7 @@ public class DialogManager : MonoBehaviour
             yield return new WaitForSeconds(2f);
             firstOption.GetComponentInChildren<TMP_Text>().text = "1) Marcharte.";
             firstOption.GetComponent<Button>().onClick.AddListener(CloseDialog);
+            npcBehaviour.GuardTalkedToPlayer = false;
             ActiveOptions();
         }
         else
@@ -351,8 +366,13 @@ public class DialogManager : MonoBehaviour
         Cursor.lockState = CursorLockMode.Locked;
         Cursor.visible = false;
         GetComponent<NavMeshAgent>().speed = npcBehaviour.NpcData.Speed;
+        Invoke("ActivateCanTalk", 2f);
     }
 
+    void ActivateCanTalk()
+    {
+        canTalk = true;
+    }
     void ResetDialogOptions()
     {
         firstOption.GetComponent<Button>().onClick.RemoveAllListeners();

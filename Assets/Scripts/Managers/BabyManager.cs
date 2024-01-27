@@ -1,7 +1,11 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Data;
+using TMPro;
 using UnityEngine;
+using UnityEngine.AI;
+using UnityEngine.UI;
 
 public class BabyManager : MonoBehaviour
 {
@@ -10,6 +14,13 @@ public class BabyManager : MonoBehaviour
     [SerializeField] private int IncreasedHappinessDecreaseRatio;
     [SerializeField] private int throwItemsChance;
     [SerializeField] private int entertainHappinessIncrease;
+    [SerializeField] private GameObject dialogPanel;
+    [SerializeField] private GameObject npcPhrase;
+    [SerializeField] private GameObject firstOption;
+    [SerializeField] private GameObject secondOption;
+    [SerializeField] private GameObject thirdOption;
+    [SerializeField] private GameObject player;
+
     private StateMachine brain;
     private float happiness;
     private float toiletNeed;
@@ -18,6 +29,8 @@ public class BabyManager : MonoBehaviour
     private int wantItemsTiming;
     private float timer;
     private bool hasRequestedItem;
+
+
     public float Happiness { get => happiness; set => happiness = value; }
     public int NormalHappinessDecreaseRatio { get => normalHappinessDecreaseRatio; set => normalHappinessDecreaseRatio = value; }
 
@@ -149,7 +162,7 @@ public class BabyManager : MonoBehaviour
     public void Entertain()
     {
         //TODO Animacion de entretener al bebe
-        Happiness += entertainHappinessIncrease;
+        happiness += entertainHappinessIncrease;
     }
 
     public void CleanBaby()
@@ -172,5 +185,27 @@ public class BabyManager : MonoBehaviour
     {
         //TODO incluir item deseado en la lista,abrir cuadro de dialogo informando que el bebe quiere el item, Resetear ratio de felizidad cuando consigas el item
         Happiness += IncreasedHappinessDecreaseRatio;
+    }
+
+    public void OpenBabyOptions()
+    {
+        Cursor.visible = true;
+        Cursor.lockState = CursorLockMode.None;
+        player.GetComponent<PlayerController>().IsOnDialog = true;
+        dialogPanel.SetActive(true);
+        npcPhrase.GetComponent<TMP_Text>().text = "¿Que quieres hacer?";
+        firstOption.GetComponentInChildren<TMP_Text>().text = "1) Jugar.";
+        secondOption.GetComponentInChildren<TMP_Text>().text = "2) Cambiar pañal.";
+        thirdOption.GetComponentInChildren<TMP_Text>().text = "3) Marcharte.";
+        firstOption.GetComponent<Button>().onClick.AddListener(Entertain);
+        secondOption.GetComponent<Button>().onClick.AddListener(CleanBaby);
+        thirdOption.GetComponent<Button>().onClick.AddListener(CloseDialog);
+    }
+    void CloseDialog()
+    {
+        dialogPanel.SetActive(false);
+        player.GetComponent<PlayerController>().IsOnDialog = false;
+        Cursor.lockState = CursorLockMode.Locked;
+        Cursor.visible = false;
     }
 }
