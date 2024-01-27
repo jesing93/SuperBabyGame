@@ -42,9 +42,11 @@ public class BabyManager : MonoBehaviour
     public int NormalHappinessDecreaseRatio { get => normalHappinessDecreaseRatio; set => normalHappinessDecreaseRatio = value; }
     public bool CanTalk { get => canTalk; set => canTalk = value; }
     public float AngryTimer { get => angryTimer; set => angryTimer = value; }
+    public string DesiredObject { get => desiredObject; set => desiredObject = value; }
 
     private void Awake()
     {
+        DesiredObject = null;
         Instance = this;
         Happiness = 50f;
         toiletNeed = Random.Range(0, 50);
@@ -64,7 +66,7 @@ public class BabyManager : MonoBehaviour
         {
             IncreaseToiletNeed();
         }
-        if (happiness < 20)
+        if (happiness < 20 || toiletNeed>=100)
         {
             AngryTimer += Time.deltaTime;
         }
@@ -263,15 +265,27 @@ public class BabyManager : MonoBehaviour
 
     void WantItem()
     {
-        //TODO incluir item deseado en la lista,abrir cuadro de dialogo informando que el bebe quiere el item, Resetear ratio de felicidad cuando consigas el item
-        desiredObject = desiredObjectList[Random.Range(0, desiredObjectList.Count - 1)];
-        PopUpManager.instance.CreatePopUp("", Color.green, "El bebé quiere: " + desiredObjectList);
-        happinessDecreaseRatio = IncreasedHappinessDecreaseRatio;
+        //TODO incluir items deseado en la lista,
+        DesiredObject = desiredObjectList[Random.Range(0, desiredObjectList.Count - 1)];
+        PopUpManager.instance.CreatePopUp("", Color.green, "El bebé quiere: " + DesiredObject);
+        Invoke("UncollectedBabyItem", 30f);
+    }
+    public void UncollectedBabyItem()
+    {
+        if (DesiredObject != null) {
+            happiness -= 20;
+            happinessDecreaseRatio = IncreasedHappinessDecreaseRatio;
+            DesiredObject = null;
+        }
     }
     public void CollectedBabyItem()
     {
-        happiness += entertainHappinessIncrease;
-        happinessDecreaseRatio = normalHappinessDecreaseRatio;
+        if (DesiredObject != null)
+        {
+            happiness += entertainHappinessIncrease;
+            happinessDecreaseRatio = normalHappinessDecreaseRatio;
+            DesiredObject = null;
+        }
     }
     public void OpenBabyOptions()
     {
