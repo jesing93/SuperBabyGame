@@ -15,13 +15,19 @@ public class BabyManager : MonoBehaviour
     private float toiletNeed;
     private int NormalHappinessDecreaseRatio;
     private bool canThrowItem = true;
+    private int wantItemsTiming;
+    private float timer;
+    private bool hasRequestedItem;
+    public float Happiness { get => happiness; set => happiness = value; }
+    public int NormalHappinessDecreaseRatio1 { get => NormalHappinessDecreaseRatio; set => NormalHappinessDecreaseRatio = value; }
 
     private void Awake()
     {
-        happiness = 50f;
+        Happiness = 50f;
         toiletNeed = Random.Range(0, 50);
         brain = GetComponent<StateMachine>();
-        NormalHappinessDecreaseRatio = happinessDecreaseRatio;
+        NormalHappinessDecreaseRatio1 = happinessDecreaseRatio;
+        wantItemsTiming= Random.Range(45,150);
     }
 
     private void Update()
@@ -29,6 +35,12 @@ public class BabyManager : MonoBehaviour
         ReduceHappiness();
         IncreaseToiletNeed();
         SelectState();
+        timer += Time.deltaTime;
+        if (wantItemsTiming <= timer && !hasRequestedItem)
+        {
+            hasRequestedItem = true;
+            WantItem();
+        }
     }
 
     private void IncreaseToiletNeed()
@@ -38,24 +50,24 @@ public class BabyManager : MonoBehaviour
 
     private void ReduceHappiness()
     {
-        happiness += Time.deltaTime / happinessDecreaseRatio;
+        Happiness += Time.deltaTime / happinessDecreaseRatio;
     }
 
     private void SelectState()
     {
-        if (happiness >= 80)
+        if (Happiness >= 80)
         {
             brain.PushState(VeryHappy, OnVeryHappyEnter, null);
         }
-        if (happiness > 40 && happiness < 70)
+        if (Happiness > 40 && Happiness < 70)
         {
             brain.PushState(Happy, OnHappyEnter, null);
         }
-        if (happiness > 20 && happiness <= 40 )
+        if (Happiness > 20 && Happiness <= 40 )
         {
             brain.PushState(Sad, OnSadEnter, null);
         }
-        if (happiness <= 20)
+        if (Happiness <= 20)
         {
             brain.PushState(Cry, OnCryEnter, null);
         }
@@ -124,22 +136,28 @@ public class BabyManager : MonoBehaviour
     public void Entertain()
     {
         //TODO Animacion de entretener al bebe
-        happiness += entertainHappinessIncrease;
+        Happiness += entertainHappinessIncrease;
     }
 
     public void CleanBaby()
     {
+        //TODO animacion limpiar bebe
         toiletNeed = 0;
-        happinessDecreaseRatio = NormalHappinessDecreaseRatio;
+        happinessDecreaseRatio = NormalHappinessDecreaseRatio1;
     }
     private void ThrowItem()
     {
         canThrowItem = false;
         Invoke("AvailThrowItem", 20f);
-        throw new System.NotImplementedException();
     }
     void AvailThrowItem()
     {
         canThrowItem = true;
+    }
+
+    void WantItem()
+    {
+        //TODO incluir item deseado en la lista,abrir cuadro de dialogo informando que el bebe quiere el item, Resetear ratio de felizidad cuando consigas el item
+        Happiness += IncreasedHappinessDecreaseRatio;
     }
 }

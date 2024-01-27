@@ -21,12 +21,15 @@ public class NpcBehaviour : MonoBehaviour
     private bool isStoppedInShelve=false;
     private GameObject busyShelve;
     private bool followPlayer;
-
+    private DialogManager dialogManager;
+    private bool stopCry;
     public NpcData NpcData { get => npcData; set => npcData = value; }
+    public Vector3 NextPoint { get => nextPoint; set => nextPoint = value; }
 
     private void Awake()
     {
-        nextPoint = GetRandomNavmeshLocation(maxWalkingDistance);
+        dialogManager = GetComponent<DialogManager>();
+        NextPoint = GetRandomNavmeshLocation(maxWalkingDistance);
         agent = gameObject.GetComponent<NavMeshAgent>();
         foreach(GameObject stopPoint in GameObject.FindGameObjectsWithTag("StopPoint"))
         {
@@ -44,21 +47,33 @@ public class NpcBehaviour : MonoBehaviour
     {
         if (NpcData.NpcType.Equals(NpcType.guard))
         {
-            if (followPlayer)
-            {
-                nextPoint = player.transform.position;
-            }
-            if (!agent.pathPending && agent.remainingDistance < 1f)
+            if (!dialogManager.GuardIsCrying)
             {
                 if (followPlayer)
                 {
-                    //TODO Stop player and open dialog
-                    followPlayer = false;
+                    NextPoint = player.transform.position;
                 }
-                else
+                if (!agent.pathPending && agent.remainingDistance < 1f)
                 {
-                    nextPoint = GetRandomNavmeshLocation(maxWalkingDistance);
+                    if (followPlayer)
+                    {
+                        dialogManager.OpenDialog();
+                        followPlayer = false;
+                    }
+                    else
+                    {
+                        NextPoint = GetRandomNavmeshLocation(maxWalkingDistance);
+                    }
                 }
+            }
+            else
+            {
+                if (!stopCry)
+                {
+                    stopCry = true;
+                    Invoke("StopCrying",40f);
+                }
+               
             }
         }
         else if (NpcData.NpcType.Equals(NpcType.elder))
@@ -66,7 +81,7 @@ public class NpcBehaviour : MonoBehaviour
            
             if (followPlayer)
             {
-                nextPoint = player.transform.position;
+                NextPoint = player.transform.position;
             }
             Debug.Log(agent.remainingDistance);
             if (agent.remainingDistance < 1.5f)
@@ -86,12 +101,12 @@ public class NpcBehaviour : MonoBehaviour
                 {
                     if (Random.Range(0, 100) < stopInShelveRate)
                     {
-                        nextPoint = GetEmptyShelve();
+                        NextPoint = GetEmptyShelve();
                         isStoppedInShelve = true;
                     }
                     else
                     {
-                        nextPoint = GetRandomNavmeshLocation(maxWalkingDistance);
+                        NextPoint = GetRandomNavmeshLocation(maxWalkingDistance);
                     }
                 }
               }
@@ -108,18 +123,18 @@ public class NpcBehaviour : MonoBehaviour
                     {
                         if (Random.Range(0, 100) < stopInShelveRate)
                         {
-                            nextPoint = GetEmptyShelve();
+                            NextPoint = GetEmptyShelve();
                             isStoppedInShelve = true;
                         }
                         else
                         {
-                           nextPoint = GetRandomNavmeshLocation(maxWalkingDistance);
+                           NextPoint = GetRandomNavmeshLocation(maxWalkingDistance);
                         }
                     }
                 }
         }
        
-         agent.SetDestination(nextPoint);
+         agent.SetDestination(NextPoint);
     }
 
     private void StopFollowingPlayer()
@@ -159,5 +174,11 @@ public class NpcBehaviour : MonoBehaviour
             }
         } while (Vector3.Distance(finalPosition, transform.position)<10);
         return finalPosition;
+    }
+
+    void StopCrying()
+    {
+        dialogManager.GuardIsCrying = false;
+        stopCry = false;
     }
 }

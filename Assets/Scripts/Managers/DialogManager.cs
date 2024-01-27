@@ -1,9 +1,9 @@
 
 using System.Collections;
 using TMPro;
-using TreeEditor;
 using UnityEditor.Search;
 using UnityEngine;
+using UnityEngine.AI;
 using UnityEngine.UI;
 using static TMPro.SpriteAssetUtilities.TexturePacker_JsonArray;
 
@@ -15,11 +15,18 @@ public class DialogManager : MonoBehaviour
     [SerializeField] private GameObject firstOption;
     [SerializeField] private GameObject secondOption;
     [SerializeField] private GameObject thirdOption;
+    [SerializeField] private GameObject cryGuardSpot;
 
+    private bool guardIsCrying;
     private NpcBehaviour npcBehaviour;
     private bool hasAskedForHelp = false;
-    
-    void OpenDialog()
+
+    public bool GuardIsCrying { get => guardIsCrying; set => guardIsCrying = value; }
+
+    private void Awake()
+    {
+    }
+    public void OpenDialog()
     {
         dialogPanel.SetActive(true);
         if (npcBehaviour.NpcData.NpcType == NpcType.guard)
@@ -78,7 +85,11 @@ public class DialogManager : MonoBehaviour
                 {
                     npcPhrase.GetComponent<TMP_Text>().text = "No haber tenido hijos.";
                 }
-            }
+            yield return new WaitForSeconds(2f);
+            firstOption.GetComponentInChildren<TMP_Text>().text = "1) Marcharte.";
+            firstOption.GetComponent<Button>().onClick.AddListener(CloseDialog);
+            ActiveOptions();
+        }
     }
 
     private IEnumerator ManDialog(int step, int option)
@@ -142,6 +153,10 @@ public class DialogManager : MonoBehaviour
         {
             npcPhrase.GetComponent<TMP_Text>().text = "Marisa... ay Marisa.";
         }
+        yield return new WaitForSeconds(2f);
+        firstOption.GetComponentInChildren<TMP_Text>().text = "1) Marcharte.";
+        firstOption.GetComponent<Button>().onClick.AddListener(CloseDialog);
+        ActiveOptions();
     }
 
     private IEnumerator ElderDialog(int step, int option)
@@ -236,11 +251,19 @@ public class DialogManager : MonoBehaviour
                 {
                     npcPhrase.GetComponent<TMP_Text>().text = "¡Vamos a buscarle!";
                 }
+                yield return new WaitForSeconds(2f);
+                firstOption.GetComponentInChildren<TMP_Text>().text = "1) Marcharte.";
+                firstOption.GetComponent<Button>().onClick.AddListener(CloseDialog);
+                ActiveOptions();
                 // TODO Guiar hasta el carro
             }
             else if(option == 2)
             {
                 npcPhrase.GetComponent<TMP_Text>().text = "Está aquí. Sígame.";
+                yield return new WaitForSeconds(2f);
+                firstOption.GetComponentInChildren<TMP_Text>().text = "1) Marcharte.";
+                firstOption.GetComponent<Button>().onClick.AddListener(CloseDialog);
+                ActiveOptions();
                 // TODO Guiar hasta siguiente objeto de la lista
             }
         }
@@ -250,8 +273,25 @@ public class DialogManager : MonoBehaviour
     public IEnumerator GuardDialog(int step, int option)
     {
         ResetDialogOptions();
-        //if(player.isAggresive){
-        if (step == 0)
+        if (GuardIsCrying)
+        {
+            if ((int)Random.Range(0, 2) == 0)
+            {
+                npcPhrase.GetComponent<TMP_Text>().text = "Tendría que haber sido bombero.";
+            }
+            else
+            {
+                npcPhrase.GetComponent<TMP_Text>().text = "Nadie me respeta.";
+            }
+            yield return new WaitForSeconds(2f);
+            firstOption.GetComponentInChildren<TMP_Text>().text = "1) Marcharte.";
+            firstOption.GetComponent<Button>().onClick.AddListener(CloseDialog);
+            ActiveOptions();
+        }
+        else
+        {
+            //if(player.isAggresive){
+            if (step == 0)
             {
                 npcPhrase.GetComponent<TMP_Text>().text = "¡Eh, deja de molestar a la clientela que te arresto! ¡Que soy agente!";
                 yield return new WaitForSeconds(2f);
@@ -260,28 +300,34 @@ public class DialogManager : MonoBehaviour
                 thirdOption.GetComponentInChildren<TMP_Text>().text = "3) Perdón, es que soy padre.";
                 firstOption.GetComponent<Button>().onClick.AddListener(delegate { StartCoroutine(GuardDialog(1, 1)); });
                 secondOption.GetComponent<Button>().onClick.AddListener(delegate { StartCoroutine(GuardDialog(1, 2)); });
-                thirdOption.GetComponent<Button>().onClick.AddListener(delegate   {StartCoroutine(GuardDialog(1, 3)); });
+                thirdOption.GetComponent<Button>().onClick.AddListener(delegate { StartCoroutine(GuardDialog(1, 3)); });
                 ActiveOptions();
             }
-            if(step == 1)
+            if (step == 1)
             {
-                if( option==1 || option == 2)
+                if (option == 1 || option == 2)
                 {
                     npcPhrase.GetComponent<TMP_Text>().text = "No hace falta ser tan agresivo, jo.";
-                    //TODO El guardia se va a una esquina y llora
+                    gameObject.GetComponent<NpcBehaviour>().NextPoint = cryGuardSpot.transform.position;
+                    GuardIsCrying = true;
                 }
                 else
                 {
                     npcPhrase.GetComponent<TMP_Text>().text = "Yo también y no voy tirando atunes a quien me cae mal, caballero.";
                 }
+                yield return new WaitForSeconds(2f);
+                firstOption.GetComponentInChildren<TMP_Text>().text = "1) Marcharte.";
+                firstOption.GetComponent<Button>().onClick.AddListener(CloseDialog);
+                ActiveOptions();
             }
-        /*}else{
-         *    if((int)Random.Range(0,2)==0)
-         *      npcPhrase.GetComponent<TMP_Text>().text ="Digame, que estoy vigilando";
-         *     else
-         *      npcPhrase.GetComponent<TMP_Text>().text ="A ver si puedo irme ya, que cansancio de no hacer nada.";
-         * 
-         }*/
+            /*}else{
+             *    if((int)Random.Range(0,2)==0)
+             *      npcPhrase.GetComponent<TMP_Text>().text ="Digame, que estoy vigilando";
+             *     else
+             *      npcPhrase.GetComponent<TMP_Text>().text ="A ver si puedo irme ya, que cansancio de no hacer nada.";
+             * 
+             }*/
+        }
     }
     void CloseDialog()
     {
