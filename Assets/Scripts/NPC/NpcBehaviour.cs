@@ -14,7 +14,10 @@ public class NpcBehaviour : MonoBehaviour
     [SerializeField] private float stopInTime;
     [SerializeField] private float followTime;
     [SerializeField] private GameObject player;
+    [SerializeField] private int maxAggressionTimes;
 
+    private int agrresionCount;
+    private bool playerIsAggressive;
     private Vector3 nextPoint;
     private NavMeshAgent agent;
     private Vector3 nearestPoint;
@@ -28,6 +31,7 @@ public class NpcBehaviour : MonoBehaviour
     public NpcData NpcData { get => npcData; set => npcData = value; }
     public Vector3 NextPoint { get => nextPoint; set => nextPoint = value; }
     public bool NpcStunned { get => npcStunned; set => npcStunned = value; }
+    public bool PlayerIsAggressive { get => playerIsAggressive; set => playerIsAggressive = value; }
 
     private void Awake()
     {
@@ -55,17 +59,18 @@ public class NpcBehaviour : MonoBehaviour
             {
                 if (!dialogManager.GuardIsCrying)
                 {
-                    if (followPlayer)
+                    if (agrresionCount>= maxAggressionTimes)
                     {
                         NextPoint = player.transform.position;
                     }
                     if (!agent.pathPending && agent.remainingDistance < 1f)
                     {
-                        if (followPlayer)
+                        if (agrresionCount >= maxAggressionTimes)
                         {
                             dialogManager.OpenDialog();
                             followPlayer = false;
                             agent.speed = 0;
+                            agrresionCount = 0;
                         }
                         else
                         {
@@ -183,7 +188,7 @@ public class NpcBehaviour : MonoBehaviour
             {
                 finalPosition = hit.position;
             }
-        } while (Vector3.Distance(finalPosition, transform.position)<10);
+        } while (Vector3.Distance(finalPosition, transform.position)<8);
         return finalPosition;
     }
 
@@ -196,19 +201,29 @@ public class NpcBehaviour : MonoBehaviour
     private void OnCollisionEnter(Collision collision)
     {
         Debug.Log(collision.gameObject.GetComponent<Rigidbody>().velocity);
-        if (collision.gameObject.tag == "Product" && npcData.IsStuneable )
+        if (collision.gameObject.tag == "Product")
         {
-            npcStunned = true;
-            if (isStoppedInShelve)
+            playerIsAggressive = true;
+            agrresionCount++;
+            Invoke("EndPlayerIsAggressive", 20f);
+            if (npcData.IsStuneable)
             {
-                busyShelve.GetComponentInParent<ShelvesManager>().ChangeAvailavility(false);
-                isStoppedInShelve = false;
+                npcStunned = true;
+                if (isStoppedInShelve)
+                {
+                    busyShelve.GetComponentInParent<ShelvesManager>().ChangeAvailavility(false);
+                    isStoppedInShelve = false;
+                }
+                Invoke("EndStun", 6f);
             }
-            Invoke("EndStun", 6f);
         }
     }
     void EndStun()
     {
         npcStunned = false;
+    }
+    void EndPlayerIsAggressive()
+    {
+        playerIsAggressive = false;
     }
 }
