@@ -13,4 +13,6 @@ MonoBehaviour:
   m_Name: Chuleta
   m_EditorClassIdentifier: 
   type: 1
+  productName: Chuleta
   isHeavy: 0
+  model: {fileID: 4093848092148216782, guid: 807fcec5d7cb3344cb283ae2f7929d33, type: 3}

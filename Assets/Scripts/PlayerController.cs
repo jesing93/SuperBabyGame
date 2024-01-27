@@ -18,6 +18,7 @@ public class PlayerController : MonoBehaviour
     private float maxXRot = 90;
     private float rotSpeed = .5f;
     private float throwStrength = 400;
+    private LayerMask CartLayer;
 
     private float curXRot = 0;
     private float mouseX;
@@ -30,6 +31,7 @@ public class PlayerController : MonoBehaviour
 
     private void Awake()
     {
+        CartLayer = LayerMask.GetMask("Cart");
         playerInput = new PlayerInput();
 
         //Assign this function to the input event
@@ -65,7 +67,7 @@ public class PlayerController : MonoBehaviour
         Ray ray = new(playerHead.transform.position, playerHead.transform.forward);
         RaycastHit hit;
         Debug.DrawRay(playerHead.transform.position, playerHead.transform.forward * 3, Color.red, .5f);
-        if (Physics.Raycast(ray, out hit, 3f))
+        if (Physics.Raycast(ray, out hit, 3f, ~CartLayer))
         {
             if (hit.collider.CompareTag("Product")) //Pick up
             {
