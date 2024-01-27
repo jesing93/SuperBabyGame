@@ -7,10 +7,7 @@ TagManager:
   - Product
   - StopPoint
   - Npc
-<<<<<<< HEAD
   - Baby
-=======
->>>>>>> Jesing
   layers:
   - Default
   - TransparentFX
@@ -33,10 +30,6 @@ TagManager:
   - 
   - 
   - 
-<<<<<<< HEAD
-  - 
-=======
->>>>>>> Jesing
   - 
   - 
   - 
