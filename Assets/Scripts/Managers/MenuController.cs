@@ -32,45 +32,48 @@ public class MenuController : MonoBehaviour
         ApplyPrefs();
         //Get all resolutions availables from the user system
         resolutions = Screen.resolutions;
-
-        //Clear default options in dropdown
-        resolutionsDropdown.ClearOptions();
-        qualityDropdown.ClearOptions();
-        screenDropdown.ClearOptions();
-
-        //Add the screen options
-        List<string> screenOptions = new List<string>();
-        screenOptions.Add("FullScreen");
-        screenOptions.Add("Borderless");
-        screenOptions.Add("Windowed");
-        screenDropdown.AddOptions(screenOptions);
-
-
-        //Add the quality options
-        List<string> qualityOptions = new List<string>();
-        qualityOptions.Add("Low");
-        qualityOptions.Add("Medium");
-        qualityOptions.Add("High");
-        qualityDropdown.AddOptions(qualityOptions);
-
-        int currentResolution = 0;
-        //create a list of strings with the resolutions from the array resolutions so unity can work with the propper formating
-        List<string> resolutionOptions = new List<string>();
-        for (int i = 0; i < resolutions.Length; i++)
+        if (resolutionsDropdown != null)
         {
-            resolutionOptions.Add(resolutions[i].width + "x" + resolutions[i].height);
-            if (resolutions[i].width == Screen.currentResolution.width && resolutions[i].height == Screen.currentResolution.height)
+            //Clear default options in dropdown
+            resolutionsDropdown.ClearOptions();
+            qualityDropdown.ClearOptions();
+            screenDropdown.ClearOptions();
+            //Add the screen options
+            List<string> screenOptions = new List<string>();
+            screenOptions.Add("FullScreen");
+            screenOptions.Add("Borderless");
+            screenOptions.Add("Windowed");
+            screenDropdown.AddOptions(screenOptions);
+
+
+            //Add the quality options
+            List<string> qualityOptions = new List<string>();
+            qualityOptions.Add("Low");
+            qualityOptions.Add("Medium");
+            qualityOptions.Add("High");
+            qualityDropdown.AddOptions(qualityOptions);
+
+            int currentResolution = 0;
+            //create a list of strings with the resolutions from the array resolutions so unity can work with the propper formating
+            List<string> resolutionOptions = new List<string>();
+            for (int i = 0; i < resolutions.Length; i++)
             {
-                currentResolution = i;
+                resolutionOptions.Add(resolutions[i].width + "x" + resolutions[i].height);
+                if (resolutions[i].width == Screen.currentResolution.width && resolutions[i].height == Screen.currentResolution.height)
+                {
+                    currentResolution = i;
+                }
             }
+
+            //Add the values from the resolutions list to the dropdown
+            resolutionsDropdown.AddOptions(resolutionOptions);
+            resolutionsDropdown.value = currentResolution;
+            resolutionsDropdown.RefreshShownValue();
+
+            ScreenMode();
         }
-
-        //Add the values from the resolutions list to the dropdown
-        resolutionsDropdown.AddOptions(resolutionOptions);
-        resolutionsDropdown.value = currentResolution;
-        resolutionsDropdown.RefreshShownValue();
-
-        ScreenMode();
+        
+       
     }
     public void OnSettingsChanged()
     {
@@ -121,15 +124,10 @@ public class MenuController : MonoBehaviour
     public void ScreenMode()
     {
         int fullScreen;
-        if (PlayerPrefs.HasKey("screenMode"))
-        {
-            fullScreen = PlayerPrefs.GetInt("screenMode");
-        }
-        else
-        {
+        
             fullScreen = screenDropdown.value;
-            PlayerPrefs.SetInt("screenMode", fullScreen);
-        }
+            
+        
         switch (fullScreen)
         {
             case 0:
@@ -152,15 +150,9 @@ public class MenuController : MonoBehaviour
     {
         int quality = qualityDropdown.value;
 
-        if (PlayerPrefs.HasKey("quality"))
-        {
-            quality = PlayerPrefs.GetInt("quality");
-        }
-        else
-        {
+       
             quality = qualityDropdown.value;
-            PlayerPrefs.SetInt("quality", quality);
-        }
+            
         switch (quality)
         {
             case 0:
@@ -183,10 +175,7 @@ public class MenuController : MonoBehaviour
     /// <param name="index">index of the selected resolution in the menu</param>
     public void SetResolution(int index)
     {
-        if (PlayerPrefs.HasKey("resolution"))
-        {
-            index = PlayerPrefs.GetInt("resolution");
-        }
+
         Screen.SetResolution(resolutions[index].width, resolutions[index].height, Screen.fullScreen);
     }
 }
