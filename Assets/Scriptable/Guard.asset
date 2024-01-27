@@ -14,5 +14,5 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   NpcName: 
   npcType: 0
-  speed: 4
+  speed: 2
   isStuneable: 0

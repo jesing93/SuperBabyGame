@@ -24,9 +24,14 @@ public class DialogManager : MonoBehaviour
 
     private void Awake()
     {
+        npcBehaviour=GetComponent<NpcBehaviour>();
     }
     public void OpenDialog()
     {
+        GetComponent<NavMeshAgent>().speed = 0;
+        Cursor.visible = true;
+        Cursor.lockState = CursorLockMode.None;
+        player.GetComponent<PlayerController>().IsOnDialog = true;
         dialogPanel.SetActive(true);
         if (npcBehaviour.NpcData.NpcType == NpcType.guard)
         {
@@ -293,7 +298,7 @@ public class DialogManager : MonoBehaviour
         }
         else
         {
-            if(!npcBehaviour.PlayerIsAggressive)
+            if(npcBehaviour.AgrresionCount >= npcBehaviour.MaxAggressionTimes)
             {
                 if (step == 0)
                 {
@@ -323,6 +328,8 @@ public class DialogManager : MonoBehaviour
                     firstOption.GetComponentInChildren<TMP_Text>().text = "1) Marcharte.";
                     firstOption.GetComponent<Button>().onClick.AddListener(CloseDialog);
                     ActiveOptions();
+                    npcBehaviour.AgrresionCount = 0;
+                    npcBehaviour.GuardTalkedToPlayer = false;
                 }
             }else{
                 if ((int)Random.Range(0, 2) == 0) {
@@ -331,12 +338,18 @@ public class DialogManager : MonoBehaviour
                 else {
                     npcPhrase.GetComponent<TMP_Text>().text = "A ver si puedo irme ya, que cansancio de no hacer nada.";
                 }
+                firstOption.GetComponentInChildren<TMP_Text>().text = "1) Marcharte.";
+                firstOption.GetComponent<Button>().onClick.AddListener(CloseDialog);
+                ActiveOptions();
             }
         }
     }
     void CloseDialog()
     {
         dialogPanel.SetActive(false);
+        player.GetComponent<PlayerController>().IsOnDialog=false;
+        Cursor.lockState = CursorLockMode.Locked;
+        Cursor.visible = false;
         GetComponent<NavMeshAgent>().speed = npcBehaviour.NpcData.Speed;
     }
 
