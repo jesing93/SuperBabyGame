@@ -4,6 +4,7 @@ using UnityEngine;
 public class ProductPreset : ScriptableObject
 {
     public ProductType type;
+    public string productName;
     public bool isHeavy = false;
     public GameObject model;
 }

@@ -7,7 +7,6 @@ TagManager:
   - Product
   - StopPoint
   - Npc
-
   layers:
   - Default
   - TransparentFX
@@ -19,6 +18,7 @@ TagManager:
   - 
   - 
   - 
+  - Cart
   - 
   - 
   - 
@@ -29,7 +29,6 @@ TagManager:
   - 
   - 
   - 
-  - Product
   - 
   - 
   - 
