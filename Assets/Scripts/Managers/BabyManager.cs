@@ -106,6 +106,7 @@ public class BabyManager : MonoBehaviour
     private void OnAngryEnter()
     {
         animator.SetBool("IsAngry", true);
+        PopUpManager.instance.CreatePopUp("", Color.green, "El bebé esta cabreado.");
     }
 
     private void OnAngry()
@@ -134,11 +135,13 @@ public class BabyManager : MonoBehaviour
     private void OnSadEnter()
     {
         animator.SetBool("IsBored", true);
+        PopUpManager.instance.CreatePopUp("", Color.green, "El bebé esta aburrido.");
     }
 
     private void OnCryEnter()
     {
         animator.SetBool("IsCrying", true);
+        PopUpManager.instance.CreatePopUp("",Color.green,"El bebé se ha hecho caca.");
     }
     private void OnCryExit()
     {
@@ -192,6 +195,7 @@ public class BabyManager : MonoBehaviour
     private void ThrowItem()
     {
         canThrowItem = false;
+        PopUpManager.instance.CreatePopUp("", Color.green, "El bebé ha tirado un objeto.");
         Invoke("AvailThrowItem", 20f);
     }
     void AvailThrowItem()
@@ -202,9 +206,14 @@ public class BabyManager : MonoBehaviour
     void WantItem()
     {
         //TODO incluir item deseado en la lista,abrir cuadro de dialogo informando que el bebe quiere el item, Resetear ratio de felizidad cuando consigas el item
-        Happiness += IncreasedHappinessDecreaseRatio;
+        PopUpManager.instance.CreatePopUp("", Color.green, "El bebé quiere: ");
+        happinessDecreaseRatio = IncreasedHappinessDecreaseRatio;
     }
-
+    public void CollectedBabyItem()
+    {
+        happiness += entertainHappinessIncrease;
+        happinessDecreaseRatio = normalHappinessDecreaseRatio;
+    }
     public void OpenBabyOptions()
     {
         Cursor.visible = true;
