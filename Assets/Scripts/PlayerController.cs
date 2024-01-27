@@ -84,8 +84,16 @@ public class PlayerController : MonoBehaviour
             }
             else if (hit.collider.CompareTag("Npc"))
             {
-                
-                hit.collider.GetComponent<DialogManager>().OpenDialog();
+                if (hit.collider.GetComponent<DialogManager>().CanTalk)
+                {
+                    hit.collider.GetComponent<DialogManager>().OpenDialog();
+                }
+               
+            }
+            else if (hit.collider.CompareTag("Baby"))
+            {
+
+                hit.collider.GetComponent<BabyManager>().OpenBabyOptions();
             }
             else
             {

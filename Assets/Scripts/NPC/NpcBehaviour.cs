@@ -36,6 +36,7 @@ public class NpcBehaviour : MonoBehaviour
     public int AgrresionCount { get => agrresionCount; set => agrresionCount = value; }
     public int MaxAggressionTimes { get => maxAggressionTimes; set => maxAggressionTimes = value; }
     public bool GuardTalkedToPlayer { get => guardTalkedToPlayer; set => guardTalkedToPlayer = value; }
+    public bool IsStoppedInShelve { get => isStoppedInShelve; set => isStoppedInShelve = value; }
 
     private void Awake()
     {
@@ -118,7 +119,7 @@ public class NpcBehaviour : MonoBehaviour
                         if (Random.Range(0, 100) < stopInShelveRate)
                         {
                             NextPoint = GetEmptyShelve();
-                            isStoppedInShelve = true;
+                            IsStoppedInShelve = true;
                         }
                         else
                         {
@@ -133,7 +134,7 @@ public class NpcBehaviour : MonoBehaviour
             {
                 if (!agent.pathPending && agent.remainingDistance < 0.1f)
                 {
-                    if (isStoppedInShelve)
+                    if (IsStoppedInShelve)
                     {
                         Invoke("LeaveShelve", stopInTime);
                     }
@@ -142,7 +143,7 @@ public class NpcBehaviour : MonoBehaviour
                         if (Random.Range(0, 100) < stopInShelveRate)
                         {
                             NextPoint = GetEmptyShelve();
-                            isStoppedInShelve = true;
+                            IsStoppedInShelve = true;
                         }
                         else
                         {
@@ -162,7 +163,7 @@ public class NpcBehaviour : MonoBehaviour
     private void LeaveShelve()
     {
         busyShelve.GetComponentInParent<ShelvesManager>().ChangeAvailavility(false);
-        isStoppedInShelve = false;
+        IsStoppedInShelve = false;
     }
     private Vector3 GetEmptyShelve()
     {
@@ -212,10 +213,10 @@ public class NpcBehaviour : MonoBehaviour
                 if (npcData.IsStuneable)
                 {
                     npcStunned = true;
-                    if (isStoppedInShelve)
+                    if (IsStoppedInShelve)
                     {
                         busyShelve.GetComponentInParent<ShelvesManager>().ChangeAvailavility(false);
-                        isStoppedInShelve = false;
+                        IsStoppedInShelve = false;
                     }
                     Invoke("EndStun", 6f);
                 }

@@ -13,6 +13,6 @@ MonoBehaviour:
   m_Name: Elder
   m_EditorClassIdentifier: 
   NpcName: 
-  npcType: 0
+  npcType: 2
   speed: 2
   isStuneable: 1
