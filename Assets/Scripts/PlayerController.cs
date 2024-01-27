@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using UnityEditor.SearchService;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.InputSystem;
@@ -9,15 +10,19 @@ public class PlayerController : MonoBehaviour
     //COmponents
     private PlayerInput playerInput;
     public GameObject playerHead;
+    public GameObject handSlot;
 
     //Vars
     private float moveSpeed = 5;
     private float minXRot = -90;
     private float maxXRot = 90;
     private float rotSpeed = .5f;
+    private float throwStrength = 400;
+
     private float curXRot = 0;
     private float mouseX;
     private Vector2 moveInput;
+    private GameObject inHand = null;
 
     private void Awake()
     {
@@ -27,9 +32,14 @@ public class PlayerController : MonoBehaviour
         playerInput.Character.Move.performed += ctx => Move(ctx);
         playerInput.Character.Move.canceled += ctx => Move(ctx);
         playerInput.Character.Rotation.performed += ctx => Rotate(ctx);
+        playerInput.Character.Interact.performed += ctx => Interact();
+        playerInput.Character.Throw.performed += ctx => Throw();
 
         //Enable player input
         playerInput.Enable();
+
+        Cursor.lockState = CursorLockMode.Locked;
+        Cursor.visible = false;
     }
 
     private void Move(InputAction.CallbackContext context)
@@ -46,27 +56,56 @@ public class PlayerController : MonoBehaviour
         curXRot = Mathf.Clamp(curXRot, minXRot, maxXRot);
     }
 
-    public void Interact(InputAction.CallbackContext context)
+    public void Interact()
     {
-        Ray ray = new(transform.position, new Vector3(Camera.main.transform.forward.x, playerHead.transform.forward.y, 0));
+        Ray ray = new(playerHead.transform.position, playerHead.transform.forward);
         RaycastHit hit;
-        Debug.DrawRay(transform.position, PlayerController.instance.transform.position - transform.position);
-        if (Physics.Raycast(ray, out hit, 5f, groundLayer | playerLayer))
+        Debug.DrawRay(playerHead.transform.position, playerHead.transform.forward * 3, Color.red, .5f);
+        if (Physics.Raycast(ray, out hit, 3f))
         {
-            if (hit.collider.CompareTag("Player"))
+            if (hit.collider.CompareTag("Product")) //Pick up
             {
-                playerInSight = true;
-                //Set last sight time + sight delay
-                lastPlayerSight = Time.time + 3f;
+                if (inHand == null)
+                {
+                    Debug.Log("Pick Product");
+                    inHand = hit.collider.gameObject;
+                    inHand.GetComponent<Rigidbody>().isKinematic = true;
+                    inHand.transform.SetParent(handSlot.transform);
+                    inHand.transform.position = handSlot.transform.position;
+                }
+                else
+                {
+                    Debug.Log("Hands full");
+                }
+            }
+            else if (hit.collider.CompareTag("Npc"))
+            {
+
             }
             else
             {
-                playerInSight = false;
+                Debug.Log("Invalid");
             }
         }
         else
         {
-            playerInSight = false;
+            Debug.Log("None");
+        }
+    }
+
+    public void Throw()
+    {
+        if (inHand != null)
+        {
+            Debug.Log("Throw");
+            inHand.transform.SetParent(null);
+            inHand.GetComponent<Rigidbody>().isKinematic = false;
+            inHand.GetComponent<Rigidbody>().AddForce(playerHead.transform.forward * throwStrength);
+            inHand = null;
+        }
+        else
+        {
+            Debug.Log("Nothing in hand");
         }
     }
 
