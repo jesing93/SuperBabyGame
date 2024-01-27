@@ -36,18 +36,22 @@ public class Inventory : MonoBehaviour
     /// Add item to the inventory
     /// </summary>
     /// <param name="item"></param>
-    public void AddItemToInventory(ProductPreset item)
+    public void AddItemToInventory(GameObject itemObject)
     {
+        ProductPreset item = itemObject.GetComponent<ProductPreset>();
         if (ShoppingList.ContainsKey(item))
         {
             ShoppingItem currentItem = ShoppingList[item];
             currentItem.Current ++;
+            currentItem.Items.Add(itemObject);
             ShoppingList[item] = currentItem;
             Debug.Log("Ahora tienes " + currentItem.Current + " de " + currentItem.Needed + " " + item.productName);
         }
         else
         {
-            ShoppingList.Add(item, new ShoppingItem(1, 0));
+            ShoppingItem newItem = new ShoppingItem(1, 0);
+            newItem.Items.Add(itemObject);
+            ShoppingList.Add(item, newItem);
             Debug.Log("Ahora tienes 1 de 0" + item.productName);
         }
     }
@@ -57,7 +61,7 @@ public class Inventory : MonoBehaviour
     /// </summary>
     /// <param name="item"></param>
     /// <returns></returns>
-    public ProductPreset RemoveItemFromInventory(ProductPreset item = null)
+    public GameObject RemoveItemFromInventory(ProductPreset item = null, GameObject itemObject = null)
     {
         //If remove a random item
         if(item == null)
@@ -65,13 +69,18 @@ public class Inventory : MonoBehaviour
             KeyValuePair<ProductPreset, ShoppingItem> randomItem = ShoppingList.ElementAt(Random.Range(0,ShoppingList.Count + 1));
             if(randomItem.Key.isHeavy)
             {
-                //TODO: Bebé se enfada porque pesa
+                //Bebé se enfada porque pesa
+                return null;
             }
             else {
-                //TODO: Bebé lanza el objeto
+                //Bebé lanza el objeto
                 ShoppingItem tempItem = randomItem.Value;
                 tempItem.Current--;
+                int outItemId = Random.Range(0, tempItem.Items.Count);
+                GameObject outItem = tempItem.Items[outItemId];
+                tempItem.Items.RemoveAt(outItemId);
                 ShoppingList[randomItem.Key] = tempItem;
+                return outItem; 
             }
         }
         else //Remove a specific item
@@ -80,22 +89,26 @@ public class Inventory : MonoBehaviour
             {
                 ShoppingItem currentItem = ShoppingList[item];
                 currentItem.Current--;
+                int outItemId = Random.Range(0, currentItem.Items.Count);
+                GameObject outItem = currentItem.Items[outItemId];
+                currentItem.Items.RemoveAt(outItemId);
                 ShoppingList[item] = currentItem;
                 Debug.Log("Ahora tienes " + currentItem.Current + " de " + currentItem.Needed + " " + item.productName);
+                return outItem;
             }
             else
             {
                 Debug.Log("Item don't exist");
             }
         }
-        return item;
+        return null;
     }
 
     private void OnTriggerEnter(Collider other)
     {
         if (other.gameObject.CompareTag("Product"))
         {
-            AddItemToInventory(other.gameObject.GetComponent<Product>().preset);
+            AddItemToInventory(other.gameObject);
         }
     }
 
@@ -103,7 +116,7 @@ public class Inventory : MonoBehaviour
     {
         if (other.gameObject.CompareTag("Product"))
         {
-            RemoveItemFromInventory(other.gameObject.GetComponent<Product>().preset);
+            RemoveItemFromInventory(other.gameObject.GetComponent<Product>().preset, other.gameObject);
         }
     }
 }
@@ -112,13 +125,16 @@ public struct ShoppingItem
 {
     private int current;
     private int needed;
+    private List<GameObject> items;
 
     public ShoppingItem(int newCurrent, int newNeeded) : this()
     {
         current = newCurrent;
         needed = newNeeded;
+        items = new();
     }
 
     public int Current { get => current; set => current = value; }
     public int Needed { get => needed; set => needed = value; }
+    public List<GameObject> Items { get => items; set => items = value; }
 }
