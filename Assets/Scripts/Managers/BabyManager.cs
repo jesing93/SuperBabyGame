@@ -22,7 +22,9 @@ public class BabyManager : MonoBehaviour
     [SerializeField] private GameObject secondOption;
     [SerializeField] private GameObject thirdOption;
     [SerializeField] private GameObject player;
+    [SerializeField] private GameObject fadeBlack;
 
+    private List<string> desiredObjectList;
     private StateMachine brain;
     private Animator animator;
     private float happiness;
@@ -32,6 +34,7 @@ public class BabyManager : MonoBehaviour
     private int wantItemsTiming;
     private float timer;
     private bool hasRequestedItem;
+    private string desiredObject;
 
 
     public float Happiness { get => happiness; set => happiness = value; }
@@ -188,15 +191,40 @@ public class BabyManager : MonoBehaviour
 
     public void CleanBaby()
     {
-        //TODO animacion limpiar bebe
-        toiletNeed = 0;
-        happinessDecreaseRatio = normalHappinessDecreaseRatio;
+        //TODO sonido cambiar pañal y fade to black
+        if (toiletNeed < 100)
+        {
+            npcPhrase.GetComponent<TMP_Text>().text = "El bebe está limpio";
+            firstOption.GetComponentInChildren<TMP_Text>().text = "1) Marcharte.";
+            firstOption.GetComponent<Button>().onClick.AddListener(CloseDialog);
+        }
+        else
+        {
+            StartCoroutine("FadeBlack");
+            toiletNeed = 0;
+            happinessDecreaseRatio = normalHappinessDecreaseRatio;
+            npcPhrase.GetComponent<TMP_Text>().text = "El bebe está limpio";
+            firstOption.GetComponentInChildren<TMP_Text>().text = "1) Marcharte.";
+            firstOption.GetComponent<Button>().onClick.AddListener(CloseDialog);
+        }
+        
     }
     private void ThrowItem()
     {
+        /*GameObject objectThrown = Inventory.Instance.RemoveItemFromInventory();
+        if (objectThrown != null)
+        {
+            //TODO animacion lanzar objeto y lanzar el objeto
+            PopUpManager.instance.CreatePopUp("", Color.green, "El bebé ha tirado un objeto.");
+        }
+        else
+        {
+            PopUpManager.instance.CreatePopUp("", Color.green, "El bebé ha intentado tirar un objeto pero no ha podido.");
+            happiness -= 20;
+        }
         canThrowItem = false;
-        PopUpManager.instance.CreatePopUp("", Color.green, "El bebé ha tirado un objeto.");
         Invoke("AvailThrowItem", 20f);
+        */
     }
     void AvailThrowItem()
     {
@@ -205,8 +233,9 @@ public class BabyManager : MonoBehaviour
 
     void WantItem()
     {
-        //TODO incluir item deseado en la lista,abrir cuadro de dialogo informando que el bebe quiere el item, Resetear ratio de felizidad cuando consigas el item
-        PopUpManager.instance.CreatePopUp("", Color.green, "El bebé quiere: ");
+        //TODO incluir item deseado en la lista,abrir cuadro de dialogo informando que el bebe quiere el item, Resetear ratio de felicidad cuando consigas el item
+        desiredObject = desiredObjectList[Random.Range(0, desiredObjectList.Count - 1)];
+        PopUpManager.instance.CreatePopUp("", Color.green, "El bebé quiere: " + desiredObjectList);
         happinessDecreaseRatio = IncreasedHappinessDecreaseRatio;
     }
     public void CollectedBabyItem()
@@ -221,7 +250,7 @@ public class BabyManager : MonoBehaviour
         player.GetComponent<PlayerController>().IsOnDialog = true;
         dialogPanel.SetActive(true);
         npcPhrase.GetComponent<TMP_Text>().text = "¿Que quieres hacer?";
-        firstOption.GetComponentInChildren<TMP_Text>().text = "1) Jugar.";
+        firstOption.GetComponentInChildren<TMP_Text>().text = "1) Entretener.";
         secondOption.GetComponentInChildren<TMP_Text>().text = "2) Cambiar pañal.";
         thirdOption.GetComponentInChildren<TMP_Text>().text = "3) Marcharte.";
         firstOption.GetComponent<Button>().onClick.AddListener(Entertain);
@@ -234,5 +263,22 @@ public class BabyManager : MonoBehaviour
         player.GetComponent<PlayerController>().IsOnDialog = false;
         Cursor.lockState = CursorLockMode.Locked;
         Cursor.visible = false;
+    }
+
+    private IEnumerator FadeBlack()
+    {
+        fadeBlack.SetActive(true);
+        for (float i = 0; i <= 1; i += 0.05f)
+        {
+            fadeBlack.GetComponent<Image>().color = new Color(0, 0, 0, i);
+            yield return new WaitForSeconds(0.02f);
+        }
+        yield return new WaitForSeconds(1f);
+        for (float i = 1; i > 0; i -= 0.05f)
+        {
+            fadeBlack.GetComponent<Image>().color = new Color(0, 0, 0, i);
+            yield return new WaitForSeconds(0.02f);
+        }
+        fadeBlack.SetActive(false);
     }
 }

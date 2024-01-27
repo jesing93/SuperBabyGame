@@ -91,9 +91,7 @@ public class DialogManager : MonoBehaviour
                     }
                     yield return new WaitForSeconds(2f);
                     firstOption.GetComponentInChildren<TMP_Text>().text = "1) Pero...";
-                    secondOption.GetComponentInChildren<TMP_Text>().text = "2) Marcharte.";
                     firstOption.GetComponent<Button>().onClick.AddListener(delegate { StartCoroutine(WomanDialog(1, 1)); });
-                    secondOption.GetComponent<Button>().onClick.AddListener(CloseDialog);
                     ActiveOptions();
                 }
                 if (step == 1)
@@ -181,9 +179,7 @@ public class DialogManager : MonoBehaviour
                     }
                     yield return new WaitForSeconds(2f);
                     firstOption.GetComponentInChildren<TMP_Text>().text = "1) Me gustaría que no nos faltase al respeto.";
-                    secondOption.GetComponentInChildren<TMP_Text>().text = "2) Marcharte.";
                     firstOption.GetComponent<Button>().onClick.AddListener(delegate { StartCoroutine(ManDialog(3, 1)); });
-                    secondOption.GetComponent<Button>().onClick.AddListener(CloseDialog);
                     ActiveOptions();
                 }
                 if (step == 3)
