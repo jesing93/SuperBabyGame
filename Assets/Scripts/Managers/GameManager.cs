@@ -2,30 +2,31 @@ using DG.Tweening;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.Android;
+using UnityEngine.UI;
 
 public class GameManager : MonoBehaviour
 {
-    public float TimeToLive = 60f;
-    public float TimeWhenDestroy;
+
     public GameObject menuPause;
     public GameObject menuOptions;
     private bool isPaused;
     private bool isGameStarted;
     private bool isGameEnded;
+    public Slider timeSlider;
+    public float timeStandard = 300;
+    public float currentTime;
+    public GameObject sliderPoint;
+    bool isCatched;
+    public GameObject paperInventory;
     void Start()
     {
-        TimeWhenDestroy = Time.time + TimeToLive;
         isGameStarted = true;
+        
     }
 
     void Update()
     {
-        if (Time.time >= TimeWhenDestroy && !isGameEnded)
-        {
-            Debug.Log("TODO: Game over, baby");
-            isGameEnded = true;
-        }
+
         if (isGameStarted && !isGameEnded && Input.GetKeyDown(KeyCode.Escape))
         {
             if (isPaused)
@@ -37,6 +38,8 @@ public class GameManager : MonoBehaviour
                 Pause();
             }
         }
+        Timing();
+        Paper();
     }
     private void Pause()
     {
@@ -54,5 +57,30 @@ public class GameManager : MonoBehaviour
         Time.timeScale = 1.0f;
         menuPause.SetActive(false);
         menuOptions.SetActive(false);
+    }
+    public void Timing()
+    {
+        timeSlider.value = currentTime;
+        currentTime = timeStandard - Time.time;
+        if (currentTime <= 0 && !isGameEnded)
+        {
+            sliderPoint.SetActive(false);
+            isGameEnded = true;
+        }
+    }
+    public void Paper()
+    {
+        if(Input.GetKeyDown(KeyCode.Tab))
+        {
+            if(isCatched)
+            {
+                paperInventory.SetActive(false);
+                isCatched = false;
+            } else
+            {
+                paperInventory.SetActive(true);
+                isCatched = true;
+            }
+        }
     }
 }
