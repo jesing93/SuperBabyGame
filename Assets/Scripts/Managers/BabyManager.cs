@@ -13,20 +13,20 @@ public class BabyManager : MonoBehaviour
     private StateMachine brain;
     private float happiness;
     private float toiletNeed;
-    private int NormalHappinessDecreaseRatio;
+    private int normalHappinessDecreaseRatio;
     private bool canThrowItem = true;
     private int wantItemsTiming;
     private float timer;
     private bool hasRequestedItem;
     public float Happiness { get => happiness; set => happiness = value; }
-    public int NormalHappinessDecreaseRatio1 { get => NormalHappinessDecreaseRatio; set => NormalHappinessDecreaseRatio = value; }
+    public int NormalHappinessDecreaseRatio { get => normalHappinessDecreaseRatio; set => normalHappinessDecreaseRatio = value; }
 
     private void Awake()
     {
         Happiness = 50f;
         toiletNeed = Random.Range(0, 50);
         brain = GetComponent<StateMachine>();
-        NormalHappinessDecreaseRatio1 = happinessDecreaseRatio;
+        NormalHappinessDecreaseRatio = happinessDecreaseRatio;
         wantItemsTiming= Random.Range(45,150);
     }
 
@@ -57,28 +57,41 @@ public class BabyManager : MonoBehaviour
     {
         if (Happiness >= 80)
         {
-            brain.PushState(VeryHappy, OnVeryHappyEnter, null);
+            brain.PushState(OnVeryHappy, OnVeryHappyEnter, null);
         }
-        if (Happiness > 40 && Happiness < 70)
+        if (Happiness > 60 && Happiness < 80)
         {
-            brain.PushState(Happy, OnHappyEnter, null);
+            brain.PushState(OnHappy, OnHappyEnter, null);
+        }
+        if (Happiness > 40 && Happiness < 60)
+        {
+            brain.PushState(OnDefault, OnDefaultEnter, null);
         }
         if (Happiness > 20 && Happiness <= 40 )
         {
-            brain.PushState(Sad, OnSadEnter, null);
+            brain.PushState(OnSad, OnSadEnter, null);
         }
         if (Happiness <= 20)
         {
-            brain.PushState(Cry, OnCryEnter, null);
+            brain.PushState(OnCry, OnCryEnter, null);
         }
         if (toiletNeed == 100)
         {
-            brain.PushState(Shit, OnShitEnter, null);
+            brain.PushState(OnShit, OnShitEnter, null);
         }
     }
 
 
-    private void Sad()
+    private void OnDefault()
+    {
+        //TODO Animacion y tirar cosas del carro
+    }
+
+    private void OnDefaultEnter()
+    {
+        //TODO Reset Animacion
+    }
+    private void OnSad()
     {
         //TODO Animacion y tirar cosas del carro
     }
@@ -92,7 +105,7 @@ public class BabyManager : MonoBehaviour
         //TODO Reset Animacion
         happinessDecreaseRatio = IncreasedHappinessDecreaseRatio;
     }
-    private void Shit()
+    private void OnShit()
     {
         //TODO Animacion y sonido cagarse encima
     }
@@ -104,7 +117,7 @@ public class BabyManager : MonoBehaviour
        
     }
 
-    private void Cry()
+    private void OnCry()
     {
         //TODO Animacion y sonido llorar
         if(Random.Range(0,100) <= throwItemsChance && canThrowItem)
@@ -118,7 +131,7 @@ public class BabyManager : MonoBehaviour
         //TODO Reset Animacion
     }
 
-    private void VeryHappy()
+    private void OnVeryHappy()
     {
         //TODO Animacion y sonido muy feliz
     }
@@ -128,7 +141,7 @@ public class BabyManager : MonoBehaviour
         //TODO Reset Animacion
     }
 
-    private void Happy()
+    private void OnHappy()
     {
        //TODO Animacion y sonido feliz
     }
@@ -143,7 +156,7 @@ public class BabyManager : MonoBehaviour
     {
         //TODO animacion limpiar bebe
         toiletNeed = 0;
-        happinessDecreaseRatio = NormalHappinessDecreaseRatio1;
+        happinessDecreaseRatio = normalHappinessDecreaseRatio;
     }
     private void ThrowItem()
     {
