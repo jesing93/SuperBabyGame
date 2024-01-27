@@ -7,9 +7,11 @@ using UnityEngine;
 public class Inventory : MonoBehaviour
 {
     private Dictionary<ProductPreset, ShoppingItem> ShoppingList;
+    public static Inventory Instance;
 
     private void Awake()
     {
+        Instance = this;
         ShoppingList = new();
     }
 
@@ -66,21 +68,37 @@ public class Inventory : MonoBehaviour
         //If remove a random item
         if(item == null)
         {
-            KeyValuePair<ProductPreset, ShoppingItem> randomItem = ShoppingList.ElementAt(Random.Range(0,ShoppingList.Count + 1));
-            if(randomItem.Key.isHeavy)
+            List<KeyValuePair<ProductPreset, ShoppingItem>> randomList = new();
+            foreach(var listItem in ShoppingList)
             {
-                //Bebé se enfada porque pesa
-                return null;
+                if(listItem.Value.Items.Count > 0)
+                {
+                    randomList.Add(listItem);
+                }
             }
-            else {
-                //Bebé lanza el objeto
-                ShoppingItem tempItem = randomItem.Value;
-                tempItem.Current--;
-                int outItemId = Random.Range(0, tempItem.Items.Count);
-                GameObject outItem = tempItem.Items[outItemId];
-                tempItem.Items.RemoveAt(outItemId);
-                ShoppingList[randomItem.Key] = tempItem;
-                return outItem; 
+            if(randomList.Count > 0)
+            {
+                KeyValuePair<ProductPreset, ShoppingItem> randomItem = randomList.ElementAt(Random.Range(0, randomList.Count + 1));
+                if (randomItem.Key.isHeavy)
+                {
+                    //Bebé se enfada porque pesa
+                    return null;
+                }
+                else
+                {
+                    //Bebé lanza el objeto
+                    ShoppingItem tempItem = randomItem.Value;
+                    tempItem.Current--;
+                    int outItemId = Random.Range(0, tempItem.Items.Count);
+                    GameObject outItem = tempItem.Items[outItemId];
+                    tempItem.Items.RemoveAt(outItemId);
+                    ShoppingList[randomItem.Key] = tempItem;
+                    return outItem;
+                }
+            }
+            else { 
+                //No items to return
+                return null; 
             }
         }
         else //Remove a specific item
