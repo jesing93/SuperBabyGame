@@ -24,6 +24,10 @@ public class PlayerController : MonoBehaviour
     private Vector2 moveInput;
     private GameObject inHand = null;
 
+    private bool isOnDialog;
+
+    public bool IsOnDialog { get => isOnDialog; set => isOnDialog = value; }
+
     private void Awake()
     {
         playerInput = new PlayerInput();
@@ -80,7 +84,8 @@ public class PlayerController : MonoBehaviour
             }
             else if (hit.collider.CompareTag("Npc"))
             {
-
+                
+                hit.collider.GetComponent<DialogManager>().OpenDialog();
             }
             else
             {
@@ -113,25 +118,28 @@ public class PlayerController : MonoBehaviour
     private void LateUpdate()
     {
         //Rotation)
-        if(!(playerInput.Character.Rotation.ReadValue<Vector2>() == Vector2.zero))
+        if (!isOnDialog)
         {
-            transform.eulerAngles = new Vector3(0, transform.eulerAngles.y + (mouseX * rotSpeed), 0);
-            playerHead.transform.localEulerAngles = new Vector3(curXRot, 0, 0);
+            if (!(playerInput.Character.Rotation.ReadValue<Vector2>() == Vector2.zero))
+            {
+                transform.eulerAngles = new Vector3(0, transform.eulerAngles.y + (mouseX * rotSpeed), 0);
+                playerHead.transform.localEulerAngles = new Vector3(curXRot, 0, 0);
+            }
+
+            //--Camera movement--
+            //Normalize direction
+            Vector3 forward = transform.forward;
+            forward.y = 0;
+            forward.Normalize();
+
+            Vector3 right = transform.right;
+
+            Vector3 dir = forward * moveInput.y + right * moveInput.x;
+            dir.Normalize();
+
+            //Actual movement
+            dir *= moveSpeed * Time.deltaTime;
+            transform.position += dir;
         }
-
-        //--Camera movement--
-        //Normalize direction
-        Vector3 forward = transform.forward;
-        forward.y = 0;
-        forward.Normalize();
-
-        Vector3 right = transform.right;
-
-        Vector3 dir = forward * moveInput.y + right * moveInput.x;
-        dir.Normalize();
-
-        //Actual movement
-        dir *= moveSpeed * Time.deltaTime;
-        transform.position += dir;
     }
 }
