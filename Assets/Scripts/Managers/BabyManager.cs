@@ -13,20 +13,20 @@ public class BabyManager : MonoBehaviour
     private StateMachine brain;
     private float happiness;
     private float toiletNeed;
-    private int NormalHappinessDecreaseRatio;
+    private int normalHappinessDecreaseRatio;
     private bool canThrowItem = true;
     private int wantItemsTiming;
     private float timer;
     private bool hasRequestedItem;
     public float Happiness { get => happiness; set => happiness = value; }
-    public int NormalHappinessDecreaseRatio1 { get => NormalHappinessDecreaseRatio; set => NormalHappinessDecreaseRatio = value; }
+    public int NormalHappinessDecreaseRatio { get => normalHappinessDecreaseRatio; set => normalHappinessDecreaseRatio = value; }
 
     private void Awake()
     {
         Happiness = 50f;
         toiletNeed = Random.Range(0, 50);
         brain = GetComponent<StateMachine>();
-        NormalHappinessDecreaseRatio1 = happinessDecreaseRatio;
+        NormalHappinessDecreaseRatio = happinessDecreaseRatio;
         wantItemsTiming= Random.Range(45,150);
     }
 
@@ -143,7 +143,7 @@ public class BabyManager : MonoBehaviour
     {
         //TODO animacion limpiar bebe
         toiletNeed = 0;
-        happinessDecreaseRatio = NormalHappinessDecreaseRatio1;
+        happinessDecreaseRatio = normalHappinessDecreaseRatio;
     }
     private void ThrowItem()
     {

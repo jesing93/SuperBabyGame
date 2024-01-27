@@ -332,6 +332,7 @@ public class DialogManager : MonoBehaviour
     void CloseDialog()
     {
         dialogPanel.SetActive(false);
+        GetComponent<NavMeshAgent>().speed = npcBehaviour.NpcData.Speed;
     }
 
     void ResetDialogOptions()

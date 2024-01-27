@@ -23,8 +23,11 @@ public class NpcBehaviour : MonoBehaviour
     private bool followPlayer;
     private DialogManager dialogManager;
     private bool stopCry;
+    private bool npcStunned;
+
     public NpcData NpcData { get => npcData; set => npcData = value; }
     public Vector3 NextPoint { get => nextPoint; set => nextPoint = value; }
+    public bool NpcStunned { get => npcStunned; set => npcStunned = value; }
 
     private void Awake()
     {
@@ -45,75 +48,83 @@ public class NpcBehaviour : MonoBehaviour
 
     private void goToNextPoint()
     {
-        if (NpcData.NpcType.Equals(NpcType.guard))
+        if (!npcStunned)
         {
-            if (!dialogManager.GuardIsCrying)
+            //GUARD LOGIC
+            if (NpcData.NpcType.Equals(NpcType.guard))
             {
-                if (followPlayer)
-                {
-                    NextPoint = player.transform.position;
-                }
-                if (!agent.pathPending && agent.remainingDistance < 1f)
+                if (!dialogManager.GuardIsCrying)
                 {
                     if (followPlayer)
                     {
-                        dialogManager.OpenDialog();
-                        followPlayer = false;
+                        NextPoint = player.transform.position;
                     }
-                    else
+                    if (!agent.pathPending && agent.remainingDistance < 1f)
                     {
-                        NextPoint = GetRandomNavmeshLocation(maxWalkingDistance);
+                        if (followPlayer)
+                        {
+                            dialogManager.OpenDialog();
+                            followPlayer = false;
+                            agent.speed = 0;
+                        }
+                        else
+                        {
+                            NextPoint = GetRandomNavmeshLocation(maxWalkingDistance);
+                        }
                     }
                 }
-            }
-            else
-            {
-                if (!stopCry)
+                else
                 {
-                    stopCry = true;
-                    Invoke("StopCrying",40f);
+                    if (!stopCry)
+                    {
+                        stopCry = true;
+                        Invoke("StopCrying", 40f);
+                    }
+
                 }
-               
             }
-        }
-        else if (NpcData.NpcType.Equals(NpcType.elder))
-        {
-           
-            if (followPlayer)
-            {
-                NextPoint = player.transform.position;
-            }
-            Debug.Log(agent.remainingDistance);
-            if (agent.remainingDistance < 1.5f)
+
+            //ELDER LOGIC
+            else if (NpcData.NpcType.Equals(NpcType.elder))
             {
 
                 if (followPlayer)
                 {
-                    //TODO Stop player and open dialog
-                    followPlayer = false;
+                    NextPoint = player.transform.position;
                 }
-                if (Random.Range(0, 100) < findPlayerRate)
+                if (agent.remainingDistance < 1.5f)
                 {
-                    followPlayer = true;
-                    Invoke("StopFollowingPlayer", followTime);
-                }
-                else
-                {
-                    if (Random.Range(0, 100) < stopInShelveRate)
+
+                    if (followPlayer)
                     {
-                        NextPoint = GetEmptyShelve();
-                        isStoppedInShelve = true;
+                        dialogManager.OpenDialog();
+                        agent.speed = 0;
+                        followPlayer = false;
+                    }
+                    if (Random.Range(0, 100) < findPlayerRate)
+                    {
+                        followPlayer = true;
+                        Invoke("StopFollowingPlayer", followTime);
                     }
                     else
                     {
-                        NextPoint = GetRandomNavmeshLocation(maxWalkingDistance);
+                        if (Random.Range(0, 100) < stopInShelveRate)
+                        {
+                            NextPoint = GetEmptyShelve();
+                            isStoppedInShelve = true;
+                        }
+                        else
+                        {
+                            NextPoint = GetRandomNavmeshLocation(maxWalkingDistance);
+                        }
                     }
                 }
-              }
-         }
-        else
-        {
-         if (!agent.pathPending && agent.remainingDistance < 0.1f)
+            }
+
+            //CLIENTS LOGIC
+            else
+            {
+                if (!agent.pathPending && agent.remainingDistance < 0.1f)
                 {
                     if (isStoppedInShelve)
                     {
@@ -128,13 +139,13 @@ public class NpcBehaviour : MonoBehaviour
                         }
                         else
                         {
-                           NextPoint = GetRandomNavmeshLocation(maxWalkingDistance);
+                            NextPoint = GetRandomNavmeshLocation(maxWalkingDistance);
                         }
                     }
                 }
+            }
+            agent.SetDestination(NextPoint);
         }
-       
-         agent.SetDestination(NextPoint);
     }
 
     private void StopFollowingPlayer()
@@ -156,8 +167,8 @@ public class NpcBehaviour : MonoBehaviour
         Debug.Log(!shelvesStopPoints[randomShelve].GetComponentInParent<ShelvesManager>().IsBusyNpc && !shelvesStopPoints[randomShelve].GetComponentInParent<ShelvesManager>().IsBusyPlayer);
         nearestPoint = shelvesStopPoints[randomShelve].transform.position;
         busyShelve = shelvesStopPoints[randomShelve];
-       busyShelve.GetComponentInParent<ShelvesManager>().ChangeAvailavility(true);
-       return nearestPoint;
+        busyShelve.GetComponentInParent<ShelvesManager>().ChangeAvailavility(true);
+        return nearestPoint;
     }
 
     public Vector3 GetRandomNavmeshLocation(float radius)
@@ -180,5 +191,23 @@ public class NpcBehaviour : MonoBehaviour
     {
         dialogManager.GuardIsCrying = false;
         stopCry = false;
+    }
+
+    private void OnCollisionEnter(Collision collision)
+    {
+        if (collision.gameObject.tag == "Product" && npcData.IsStuneable)
+        {
+            npcStunned = true;
+            if (isStoppedInShelve)
+            {
+                busyShelve.GetComponentInParent<ShelvesManager>().ChangeAvailavility(false);
+                isStoppedInShelve = false;
+            }
+            Invoke("EndStun", 6f);
+        }
+    }
+    void EndStun()
+    {
+        npcStunned = false;
     }
 }
