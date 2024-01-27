@@ -1,21 +1,27 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.ComponentModel;
 using UnityEngine;
 
 public class BabyManager : MonoBehaviour
 {
     [SerializeField] private int happinessDecreaseRatio;
     [SerializeField] private int toiletNeedIcreaseRatio;
-
+    [SerializeField] private int IncreasedHappinessDecreaseRatio;
+    [SerializeField] private int throwItemsChance;
+    [SerializeField] private int entertainHappinessIncrease;
     private StateMachine brain;
     private float happiness;
     private float toiletNeed;
+    private int NormalHappinessDecreaseRatio;
+    private bool canThrowItem = true;
 
     private void Awake()
     {
         happiness = 50f;
         toiletNeed = Random.Range(0, 50);
         brain = GetComponent<StateMachine>();
+        NormalHappinessDecreaseRatio = happinessDecreaseRatio;
     }
 
     private void Update()
@@ -37,21 +43,21 @@ public class BabyManager : MonoBehaviour
 
     private void SelectState()
     {
-        if (happiness >= 70)
+        if (happiness >= 80)
         {
-            brain.PushState(Happy, OnHappyEnter, null);
+            brain.PushState(VeryHappy, OnVeryHappyEnter, null);
         }
         if (happiness > 40 && happiness < 70)
         {
-            brain.PushState(Default, OnDefaultEnter, null);
+            brain.PushState(Happy, OnHappyEnter, null);
         }
         if (happiness > 20 && happiness <= 40 )
         {
-            brain.PushState(Cry, OnCryEnter, null);
+            brain.PushState(Sad, OnSadEnter, null);
         }
         if (happiness <= 20)
         {
-            brain.PushState(Rage, OnRageEnter, null);
+            brain.PushState(Cry, OnCryEnter, null);
         }
         if (toiletNeed == 100)
         {
@@ -60,18 +66,19 @@ public class BabyManager : MonoBehaviour
     }
 
 
-    private void Rage()
+    private void Sad()
     {
         //TODO Animacion y tirar cosas del carro
     }
 
-    private void OnRageEnter()
+    private void OnSadEnter()
     {
         //TODO Reset Animacion
     }
     private void OnShitEnter()
     {
         //TODO Reset Animacion
+        happinessDecreaseRatio = IncreasedHappinessDecreaseRatio;
     }
     private void Shit()
     {
@@ -81,21 +88,27 @@ public class BabyManager : MonoBehaviour
     private void OnCryEnter()
     {
         //TODO Reset Animacion
+
+       
     }
 
     private void Cry()
     {
         //TODO Animacion y sonido llorar
+        if(Random.Range(0,100) <= throwItemsChance && canThrowItem)
+        {
+            ThrowItem();
+        }
     }
 
-    private void OnDefaultEnter()
+    private void OnVeryHappyEnter()
     {
         //TODO Reset Animacion
     }
 
-    private void Default()
+    private void VeryHappy()
     {
-        //TODO Animacion y sonido default
+        //TODO Animacion y sonido muy feliz
     }
 
     private void OnHappyEnter()
@@ -111,11 +124,22 @@ public class BabyManager : MonoBehaviour
     public void Entertain()
     {
         //TODO Animacion de entretener al bebe
-        happiness += 50;
+        happiness += entertainHappinessIncrease;
     }
 
-    public void ClearBaby()
+    public void CleanBaby()
     {
         toiletNeed = 0;
+        happinessDecreaseRatio = NormalHappinessDecreaseRatio;
+    }
+    private void ThrowItem()
+    {
+        canThrowItem = false;
+        Invoke("AvailThrowItem", 20f);
+        throw new System.NotImplementedException();
+    }
+    void AvailThrowItem()
+    {
+        canThrowItem = true;
     }
 }
