@@ -308,7 +308,7 @@ public class DialogManager : MonoBehaviour
         {
             if (step == 0)
             {
-                npcPhrase.GetComponent<TMP_Text>().text = "Señor su hijo parece no estar contento.";
+                npcPhrase.GetComponent<TMP_Text>().text = "Señor, su hijo parece no estar contento.";
                 yield return new WaitForSeconds(2f);
                 firstOption.GetComponentInChildren<TMP_Text>().text = "1) Perdón pero tengo prisa.";
                 secondOption.GetComponentInChildren<TMP_Text>().text = "2) Si, perdón.";
@@ -320,16 +320,16 @@ public class DialogManager : MonoBehaviour
             if (step == 1)
             {
                 if (option == 1) {
-                    npcPhrase.GetComponent<TMP_Text>().text = "Me da igual, o lo cuidas o te llevo preso.";
+                    npcPhrase.GetComponent<TMP_Text>().text = "Me da igual, o lo cuidas o tendré que actuar.";
                     yield return new WaitForSeconds(2f);
-                    firstOption.GetComponentInChildren<TMP_Text>().text = "1) No quiero problemas.";
+                    firstOption.GetComponentInChildren<TMP_Text>().text = "1) Vale, no quiero problemas...";
                     firstOption.GetComponent<Button>().onClick.AddListener(delegate { StartCoroutine(GuardDialog(2, 1)); });
                     npcBehaviour.GuardTalkedToPlayer = false;
                     ActiveOptions();
                 }
                 else
                 {
-                    npcPhrase.GetComponent<TMP_Text>().text = "Muy bien, que no vuelva a ocurrir";
+                    npcPhrase.GetComponent<TMP_Text>().text = "Muy bien, pero que no vuelva a ocurrir";
                     yield return new WaitForSeconds(2f);
                     firstOption.GetComponentInChildren<TMP_Text>().text = "1) Marcharte.";
                     firstOption.GetComponent<Button>().onClick.AddListener(CloseDialog);
