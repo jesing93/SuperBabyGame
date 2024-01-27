@@ -188,15 +188,36 @@ public class BabyManager : MonoBehaviour
 
     public void CleanBaby()
     {
-        //TODO animacion limpiar bebe
-        toiletNeed = 0;
-        happinessDecreaseRatio = normalHappinessDecreaseRatio;
+        //TODO sonido cambiar pañal y fade to black
+        if (toiletNeed < 100)
+        {
+            npcPhrase.GetComponent<TMP_Text>().text = "El bebe está limpio";
+            firstOption.GetComponentInChildren<TMP_Text>().text = "1) Marcharte.";
+            firstOption.GetComponent<Button>().onClick.AddListener(CloseDialog);
+        }
+        else
+        {
+            toiletNeed = 0;
+            happinessDecreaseRatio = normalHappinessDecreaseRatio;
+        }
+        
     }
     private void ThrowItem()
     {
+        GameObject objectThrown = Inventory.Instance.RemoveItemFromInventory();
+        if (objectThrown != null)
+        {
+            //TODO animacion lanzar objeto y lanzar el objeto
+            PopUpManager.instance.CreatePopUp("", Color.green, "El bebé ha tirado un objeto.");
+        }
+        else
+        {
+            PopUpManager.instance.CreatePopUp("", Color.green, "El bebé ha intentado tirar un objeto pero pesa demasiado.");
+            happiness -= 20;
+        }
         canThrowItem = false;
-        PopUpManager.instance.CreatePopUp("", Color.green, "El bebé ha tirado un objeto.");
         Invoke("AvailThrowItem", 20f);
+
     }
     void AvailThrowItem()
     {
@@ -205,7 +226,7 @@ public class BabyManager : MonoBehaviour
 
     void WantItem()
     {
-        //TODO incluir item deseado en la lista,abrir cuadro de dialogo informando que el bebe quiere el item, Resetear ratio de felizidad cuando consigas el item
+        //TODO incluir item deseado en la lista,abrir cuadro de dialogo informando que el bebe quiere el item, Resetear ratio de felicidad cuando consigas el item
         PopUpManager.instance.CreatePopUp("", Color.green, "El bebé quiere: ");
         happinessDecreaseRatio = IncreasedHappinessDecreaseRatio;
     }
@@ -221,7 +242,7 @@ public class BabyManager : MonoBehaviour
         player.GetComponent<PlayerController>().IsOnDialog = true;
         dialogPanel.SetActive(true);
         npcPhrase.GetComponent<TMP_Text>().text = "¿Que quieres hacer?";
-        firstOption.GetComponentInChildren<TMP_Text>().text = "1) Jugar.";
+        firstOption.GetComponentInChildren<TMP_Text>().text = "1) Entretener.";
         secondOption.GetComponentInChildren<TMP_Text>().text = "2) Cambiar pañal.";
         thirdOption.GetComponentInChildren<TMP_Text>().text = "3) Marcharte.";
         firstOption.GetComponent<Button>().onClick.AddListener(Entertain);
