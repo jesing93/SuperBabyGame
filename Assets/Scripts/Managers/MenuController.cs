@@ -30,6 +30,7 @@ public class MenuController : MonoBehaviour
     }
     private void Start()
     {
+        Time.timeScale = 1.0f;
         ApplyPrefs();
         //Get all resolutions availables from the user system
         resolutions = Screen.resolutions;
