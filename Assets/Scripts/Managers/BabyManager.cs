@@ -122,7 +122,7 @@ public class BabyManager : MonoBehaviour
         {
             brain.PushState(OnAngry, OnAngryEnter, OnAngryExit);
         }
-        if (toiletNeed == 100)
+        if (toiletNeed >= 100)
         {
             brain.PushState(OnCry, OnCryEnter, OnCryExit);
         }
@@ -143,6 +143,13 @@ public class BabyManager : MonoBehaviour
 
     private void OnAngry()
     {
+        if ((int)timer % 15 == 0)
+        {
+            if (Random.Range(0, 100) <= throwItemsChance && canThrowItem)
+            {
+                ThrowItem();
+            }
+        }
         //TODO sonido furioso
         if (timer % 15 == 0)
         {
@@ -173,7 +180,7 @@ public class BabyManager : MonoBehaviour
     }
     private void OnSad()
     {
-        if (timer % 15 == 0)
+        if ((int)timer % 15 == 0)
         {
             if (Random.Range(0, 100) <= throwItemsChance && canThrowItem)
             {
@@ -313,11 +320,12 @@ public class BabyManager : MonoBehaviour
     public void GrabItem()
     {
         objectThrown.transform.SetParent(grabPoint.transform);
+        objectThrown.transform.localPosition = Vector3.zero;
     }
     public void ReleaseItem()
     {
         objectThrown.transform.parent = null;
-        objectThrown.GetComponent<Rigidbody>().AddForce(transform.forward * 100 );
+        objectThrown.GetComponent<Rigidbody>().AddForce(gameObject.transform.forward * 300 );
     }
     public void EndedThrowingObject()
     {
