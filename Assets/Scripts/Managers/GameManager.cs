@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.SceneManagement;
 
 public class GameManager : MonoBehaviour
 {
@@ -13,20 +14,26 @@ public class GameManager : MonoBehaviour
     private bool isGameStarted;
     private bool isGameEnded;
     public Slider timeSlider;
-    public float timeStandard = 300;
-    public float currentTime;
+    public float timeStandard = 120;
     public GameObject sliderPoint;
     bool isCatched;
     public GameObject paperInventory;
+    public GameObject panelDerrota;
+    public GameObject panelVictoria;
+    
     void Start()
     {
         isGameStarted = true;
+        panelDerrota.SetActive(false);
+        isGameEnded = false;
+        Time.timeScale = 1.0f;
         
     }
 
     void Update()
     {
-
+        timeSlider.value = timeStandard;
+        timeStandard -= Time.deltaTime;
         if (isGameStarted && !isGameEnded && Input.GetKeyDown(KeyCode.Escape))
         {
             if (isPaused)
@@ -38,7 +45,10 @@ public class GameManager : MonoBehaviour
                 Pause();
             }
         }
-        Timing();
+        if (timeStandard <= 0)
+        {
+            Timing();
+        }
         Paper();
     }
     private void Pause()
@@ -47,7 +57,7 @@ public class GameManager : MonoBehaviour
         menuPause.SetActive(true);
         //CameraController.instance.TogglePause(isPaused);
         DOTween.Kill("CamRot", false);
-        Time.timeScale = 0;
+        Time.timeScale = 0.0f;
         menuOptions.SetActive(false);
     }
     public void Unpause()
@@ -60,13 +70,10 @@ public class GameManager : MonoBehaviour
     }
     public void Timing()
     {
-        timeSlider.value = currentTime;
-        currentTime = timeStandard - Time.time;
-        if (currentTime <= 0 && !isGameEnded)
-        {
+            Time.timeScale = 0.0f;
             sliderPoint.SetActive(false);
             isGameEnded = true;
-        }
+            panelDerrota.SetActive(true);
     }
     public void Paper()
     {
@@ -82,5 +89,20 @@ public class GameManager : MonoBehaviour
                 isCatched = true;
             }
         }
+    }
+    public void Restart()
+    {
+        isGameEnded = false;
+        isGameStarted = true;
+        Debug.Log("Cañita" + SceneManager.GetActiveScene().buildIndex);
+        SceneManager.LoadScene(1);
+    }
+    public void Quit()
+    {
+        SceneManager.LoadScene(0);
+    }
+    public void Victory()
+    {
+
     }
 }
