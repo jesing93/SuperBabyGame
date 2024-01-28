@@ -102,6 +102,7 @@ public class PlayerController : MonoBehaviour
                         else
                         {
                             PickUp(hit.collider.gameObject);
+                            PopUpManager.instance.CreatePopUp("", Color.white, "La estantería está ocupada.");
                         }
                     }
                     else
