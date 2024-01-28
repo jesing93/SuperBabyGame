@@ -94,10 +94,14 @@ public class GameManager : MonoBehaviour
             {
                 paperInventory.SetActive(false);
                 isCatched = false;
+                Cursor.lockState = CursorLockMode.Locked;
+                Cursor.visible = false;
             } else
             {
                 paperInventory.SetActive(true);
                 isCatched = true;
+                Cursor.lockState = CursorLockMode.None;
+                Cursor.visible = true;
             }
         }
     }

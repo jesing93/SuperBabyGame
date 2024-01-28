@@ -6,6 +6,7 @@ using UnityEngine;
 public class ShoppingListManager : MonoBehaviour
 {
     public static ShoppingListManager instance;
+    public GameObject listUiObject;
 
     [SerializeField] private GameObject productText;
     // Start is called before the first frame update
@@ -13,24 +14,14 @@ public class ShoppingListManager : MonoBehaviour
     {
         instance = this;
     }
-    void Start()
-    {
-        
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
 
     public void AddProduct(string texto)
     {
-        GameObject newProduct = Instantiate(productText, this.transform);
+        GameObject newProduct = Instantiate(productText, listUiObject.transform);
         newProduct.GetComponent<TextMeshProUGUI>().text = texto;
     }
     public void UpdateProduct(int index, string texto)
     {
-        transform.GetChild(index).GetComponent<TextMeshProUGUI>().text = texto;
+        listUiObject.transform.GetChild(index).GetComponent<TextMeshProUGUI>().text = texto;
     }
 }

@@ -20,6 +20,10 @@ public class Inventory : MonoBehaviour
     {
         Instance = this;
         ShoppingList = new();
+    }
+
+    private void Start()
+    {
         List<ProductPreset> shuffledList = itemPresets.OrderBy(x => Random.value).ToList().ConvertAll(input => input as ProductPreset);
         for (int i = 0; i < shoppingListLength; i++)
         {
@@ -51,8 +55,10 @@ public class Inventory : MonoBehaviour
             //TODO: Add to UI list
             //item.productName;
 
-            ShoppingList.TryGetValue(item, out ShoppingItem itemData);
-            ShoppingListManager.instance.AddProduct("- " + item.productName + " " + itemData.Current + "/" + itemData.Needed);
+            if(ShoppingList.TryGetValue(item, out ShoppingItem itemData))
+            {
+                ShoppingListManager.instance.AddProduct("- " + item.productName + " " + itemData.Current + "/" + itemData.Needed);
+            }
         }
         itemsNeeded++;
     }
