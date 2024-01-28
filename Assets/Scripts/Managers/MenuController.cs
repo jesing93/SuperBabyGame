@@ -32,50 +32,51 @@ public class MenuController : MonoBehaviour
     {
         Time.timeScale = 1.0f;
         ApplyPrefs();
+        Screen.SetResolution(1920, 1080, Screen.fullScreen);
         //Get all resolutions availables from the user system
-        resolutions = Screen.resolutions;
-        if (resolutionsDropdown != null)
+        /* resolutions = Screen.resolutions;
+         if (resolutionsDropdown != null)
+         {
+             //Clear default options in dropdown
+             resolutionsDropdown.ClearOptions();
+             qualityDropdown.ClearOptions();
+             screenDropdown.ClearOptions();
+             //Add the screen options
+             List<string> screenOptions = new List<string>();
+             screenOptions.Add("FullScreen");
+             screenOptions.Add("Borderless");
+             screenOptions.Add("Windowed");
+             screenDropdown.AddOptions(screenOptions);
+
+
+             //Add the quality options
+             List<string> qualityOptions = new List<string>();
+             qualityOptions.Add("Low");
+             qualityOptions.Add("Medium");
+             qualityOptions.Add("High");
+             qualityDropdown.AddOptions(qualityOptions);
+
+             int currentResolution = 0;*/
+        //create a list of strings with the resolutions from the array resolutions so unity can work with the propper formating
+        /*List<string> resolutionOptions = new List<string>();
+        for (int i = 0; i < resolutions.Length; i++)
         {
-            //Clear default options in dropdown
-            resolutionsDropdown.ClearOptions();
-            qualityDropdown.ClearOptions();
-            screenDropdown.ClearOptions();
-            //Add the screen options
-            List<string> screenOptions = new List<string>();
-            screenOptions.Add("FullScreen");
-            screenOptions.Add("Borderless");
-            screenOptions.Add("Windowed");
-            screenDropdown.AddOptions(screenOptions);
-
-
-            //Add the quality options
-            List<string> qualityOptions = new List<string>();
-            qualityOptions.Add("Low");
-            qualityOptions.Add("Medium");
-            qualityOptions.Add("High");
-            qualityDropdown.AddOptions(qualityOptions);
-
-            int currentResolution = 0;
-            //create a list of strings with the resolutions from the array resolutions so unity can work with the propper formating
-            List<string> resolutionOptions = new List<string>();
-            for (int i = 0; i < resolutions.Length; i++)
+            resolutionOptions.Add(resolutions[i].width + "x" + resolutions[i].height);
+            if (resolutions[i].width == Screen.currentResolution.width && resolutions[i].height == Screen.currentResolution.height)
             {
-                resolutionOptions.Add(resolutions[i].width + "x" + resolutions[i].height);
-                if (resolutions[i].width == Screen.currentResolution.width && resolutions[i].height == Screen.currentResolution.height)
-                {
-                    currentResolution = i;
-                }
+                currentResolution = i;
             }
-
-            //Add the values from the resolutions list to the dropdown
-            resolutionsDropdown.AddOptions(resolutionOptions);
-            resolutionsDropdown.value = currentResolution;
-            resolutionsDropdown.RefreshShownValue();
-
-            ScreenMode();
         }
-        
-       
+
+        //Add the values from the resolutions list to the dropdown
+        resolutionsDropdown.AddOptions(resolutionOptions);
+        resolutionsDropdown.value = currentResolution;
+        resolutionsDropdown.RefreshShownValue();
+
+        ScreenMode();
+    }*/
+
+
     }
     public void OnSettingsChanged()
     {

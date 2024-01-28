@@ -26,7 +26,9 @@ public class PlayerController : MonoBehaviour
     private float rotSpeed = .5f;
     private float throwStrength = 400;
     private LayerMask CartLayer;
+    private LayerMask ShelveLayer;
 
+    private int agrresionCount;
     private float curXRot = 0;
     private float mouseX;
     private Vector2 moveInput;
@@ -39,11 +41,13 @@ public class PlayerController : MonoBehaviour
     private bool isPaused;
 
     public bool IsOnDialog { get => isOnDialog; set => isOnDialog = value; }
+    public int AgrresionCount { get => agrresionCount; set => agrresionCount = value; }
 
     private void Awake()
     {
         Instance = this;
         CartLayer = LayerMask.GetMask("Cart");
+        ShelveLayer = LayerMask.GetMask("Shelve");
         playerInput = new PlayerInput();
         audioPlayer = GetComponent<AudioSource>();
         characterController = GetComponent<CharacterController>();
@@ -83,7 +87,7 @@ public class PlayerController : MonoBehaviour
             Ray ray = new(playerHead.transform.position, playerHead.transform.forward);
             RaycastHit hit;
             Debug.DrawRay(playerHead.transform.position, playerHead.transform.forward * 3, Color.red, .5f);
-            if (Physics.Raycast(ray, out hit, 3f, ~CartLayer))
+            if (Physics.Raycast(ray, out hit, 3f,  ~CartLayer & ~ShelveLayer))
             {
                 if (hit.collider.CompareTag("Product")) //Pick up
                 {

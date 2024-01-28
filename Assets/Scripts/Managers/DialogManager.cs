@@ -208,6 +208,10 @@ public class DialogManager : MonoBehaviour
             if (npcBehaviour.PlayerIsAggressive)
             {
                 npcPhrase.GetComponent<TMP_Text>().text = "Que maleducado, voy a sacar la chancla, oiga.";
+                yield return new WaitForSeconds(2f);
+                firstOption.GetComponentInChildren<TMP_Text>().text = "1) Marcharte.";
+                firstOption.GetComponent<Button>().onClick.AddListener(CloseDialog);
+                ActiveOptions();
             }
             else
             {
@@ -314,6 +318,10 @@ public class DialogManager : MonoBehaviour
         }
         else if (BabyManager.Instance.AngryTimer>=15f)
         {
+            if (PlayerController.Instance.AgrresionCount >= 3)
+            {
+                PlayerController.Instance.AgrresionCount = 0;
+            }
             if (step == 0)
             {
                 npcPhrase.GetComponent<TMP_Text>().text = "Señor, su hijo parece no estar contento.";
@@ -322,7 +330,7 @@ public class DialogManager : MonoBehaviour
                 secondOption.GetComponentInChildren<TMP_Text>().text = "2) Si, perdón.";
                 firstOption.GetComponent<Button>().onClick.AddListener(delegate { StartCoroutine(GuardDialog(1, 1)); });
                 secondOption.GetComponent<Button>().onClick.AddListener(delegate { StartCoroutine(GuardDialog(1, 2)); });
-                npcBehaviour.GuardTalkedToPlayer = false;
+                //npcBehaviour.GuardTalkedToPlayer = false;
                 ActiveOptions();
             }
             if (step == 1)
@@ -332,7 +340,7 @@ public class DialogManager : MonoBehaviour
                     yield return new WaitForSeconds(2f);
                     firstOption.GetComponentInChildren<TMP_Text>().text = "1) Vale, no quiero problemas...";
                     firstOption.GetComponent<Button>().onClick.AddListener(delegate { StartCoroutine(GuardDialog(2, 1)); });
-                    npcBehaviour.GuardTalkedToPlayer = false;
+                    //npcBehaviour.GuardTalkedToPlayer = false;
                     ActiveOptions();
                 }
                 else
@@ -341,7 +349,7 @@ public class DialogManager : MonoBehaviour
                     yield return new WaitForSeconds(2f);
                     firstOption.GetComponentInChildren<TMP_Text>().text = "1) Marcharte.";
                     firstOption.GetComponent<Button>().onClick.AddListener(CloseDialog);
-                    npcBehaviour.GuardTalkedToPlayer = false;
+                    //npcBehaviour.GuardTalkedToPlayer = false;
                     ActiveOptions();
                 }
             }
@@ -351,13 +359,13 @@ public class DialogManager : MonoBehaviour
                 yield return new WaitForSeconds(2f);
                 firstOption.GetComponentInChildren<TMP_Text>().text = "1) Marcharte.";
                 firstOption.GetComponent<Button>().onClick.AddListener(CloseDialog);
-                npcBehaviour.GuardTalkedToPlayer = false;
+                //npcBehaviour.GuardTalkedToPlayer = false;
                 ActiveOptions();
             }
             }
         else
         {
-            if(npcBehaviour.AgrresionCount >= npcBehaviour.MaxAggressionTimes)
+            if(PlayerController.Instance.AgrresionCount >= npcBehaviour.MaxAggressionTimes)
             {
                 if (step == 0)
                 {
@@ -387,7 +395,7 @@ public class DialogManager : MonoBehaviour
                     firstOption.GetComponentInChildren<TMP_Text>().text = "1) Marcharte.";
                     firstOption.GetComponent<Button>().onClick.AddListener(CloseDialog);
                     ActiveOptions();
-                    npcBehaviour.AgrresionCount = 0;
+                    PlayerController.Instance.AgrresionCount = 0;
                     npcBehaviour.GuardTalkedToPlayer = false;
                 }
             }else{

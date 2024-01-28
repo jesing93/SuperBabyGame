@@ -14,7 +14,7 @@ GameObject:
   - component: {fileID: 4186674879980938515}
   - component: {fileID: 7037250813767840151}
   - component: {fileID: 8030332930551132544}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: Estanteria alta de multiples valdas
   m_TagString: Untagged
   m_Icon: {fileID: 0}

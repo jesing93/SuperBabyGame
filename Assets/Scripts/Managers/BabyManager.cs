@@ -56,7 +56,7 @@ public class BabyManager : MonoBehaviour
     public float AngryTimer { get => angryTimer; set => angryTimer = value; }
     public ProductPreset DesiredObject { get => desiredObject; set => desiredObject = value; }
 
-    private void Awake()
+    private void Start()
     {
         DesiredObject = null;
         Instance = this;

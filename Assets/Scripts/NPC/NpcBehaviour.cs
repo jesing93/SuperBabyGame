@@ -20,10 +20,11 @@ public class NpcBehaviour : MonoBehaviour
     [SerializeField] private int maxAggressionTimes;
 
     private GameObject objectToGuide;
+    private float npcSpeed;
     private bool returnToDefaultPosition;
     private bool guideToObject;
     private bool guardTalkedToPlayer;
-    private int agrresionCount;
+   
     private bool playerIsAggressive;
     private Vector3 nextPoint;
     private NavMeshAgent agent;
@@ -40,7 +41,6 @@ public class NpcBehaviour : MonoBehaviour
     public Vector3 NextPoint { get => nextPoint; set => nextPoint = value; }
     public bool NpcStunned { get => npcStunned; set => npcStunned = value; }
     public bool PlayerIsAggressive { get => playerIsAggressive; set => playerIsAggressive = value; }
-    public int AgrresionCount { get => agrresionCount; set => agrresionCount = value; }
     public int MaxAggressionTimes { get => maxAggressionTimes; set => maxAggressionTimes = value; }
     public bool GuardTalkedToPlayer { get => guardTalkedToPlayer; set => guardTalkedToPlayer = value; }
     public bool IsStoppedInShelve { get => isStoppedInShelve; set => isStoppedInShelve = value; }
@@ -58,6 +58,7 @@ public class NpcBehaviour : MonoBehaviour
         }
         agent.speed = NpcData.Speed;
         lastReprimend = 60;
+        npcSpeed = agent.speed;
     }
     private void Update()
     {   
@@ -74,7 +75,8 @@ public class NpcBehaviour : MonoBehaviour
             {
                 if (!dialogManager.GuardIsCrying)
                 {
-                    if (AgrresionCount>= MaxAggressionTimes || BabyManager.Instance.AngryTimer >= 15f && lastReprimend >= 60f)
+                   
+                    if (PlayerController.Instance.AgrresionCount>= MaxAggressionTimes || BabyManager.Instance.AngryTimer >= 15f && lastReprimend >= 60f)
                     {
                         NextPoint = player.transform.position;
                     }
@@ -87,7 +89,7 @@ public class NpcBehaviour : MonoBehaviour
                             lastReprimend = 0;
                         }
                         else
-                        if (AgrresionCount >= MaxAggressionTimes && !GuardTalkedToPlayer)
+                        if (PlayerController.Instance.AgrresionCount >= MaxAggressionTimes && !GuardTalkedToPlayer)
                         {
                             dialogManager.OpenDialog();
                             GuardTalkedToPlayer = true;
@@ -245,7 +247,7 @@ public class NpcBehaviour : MonoBehaviour
             {
                 finalPosition = hit.position;
             }
-        } while (Vector3.Distance(finalPosition, transform.position)<8);
+        } while (Vector3.Distance(finalPosition, transform.position)<1);
         return finalPosition;
     }
 
@@ -261,14 +263,18 @@ public class NpcBehaviour : MonoBehaviour
         
         if (collision.gameObject.tag == "Product")
         {
-            if (collision.gameObject.GetComponent<Rigidbody>().velocity.magnitude >= 2) { 
+            
+            if (collision.gameObject.GetComponent<Rigidbody>().velocity.magnitude >= 1) { 
                 playerIsAggressive = true;
-                AgrresionCount++;
+                PlayerController.Instance.AgrresionCount++;
                 Invoke("EndPlayerIsAggressive", 20f);
                 if (npcData.IsStuneable)
                 {
-                    stunParticles.SetActive(true);
+                    Debug.Log("npcStunned");
+                    
                     npcStunned = true;
+                    agent.speed = 0;
+                    stunParticles.SetActive(true);
                     if (IsStoppedInShelve)
                     {
                         busyShelve.GetComponentInParent<ShelvesManager>().ChangeAvailavility(false);
@@ -283,6 +289,7 @@ public class NpcBehaviour : MonoBehaviour
     {
         stunParticles.SetActive(false);
         npcStunned = false;
+        agent.speed = npcSpeed;
     }
     void EndPlayerIsAggressive()
     {
