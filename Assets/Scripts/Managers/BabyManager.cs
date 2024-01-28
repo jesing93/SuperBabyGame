@@ -23,9 +23,9 @@ public class BabyManager : MonoBehaviour
     [SerializeField] private GameObject thirdOption;
     [SerializeField] private GameObject player;
     [SerializeField] private GameObject fadeBlack;
+    [SerializeField] private List<ProductPreset> desiredObjectList;
 
     public static BabyManager Instance;
-    private List<string> desiredObjectList;
     private StateMachine brain;
     private Animator animator;
     private float happiness;
@@ -35,14 +35,14 @@ public class BabyManager : MonoBehaviour
     private int wantItemsTiming;
     private float timer;
     private bool hasRequestedItem;
-    private string desiredObject;
+    private ProductPreset desiredObject;
     private bool canTalk = true;
     private float angryTimer;
     public float Happiness { get => happiness; set => happiness = value; }
     public int NormalHappinessDecreaseRatio { get => normalHappinessDecreaseRatio; set => normalHappinessDecreaseRatio = value; }
     public bool CanTalk { get => canTalk; set => canTalk = value; }
     public float AngryTimer { get => angryTimer; set => angryTimer = value; }
-    public string DesiredObject { get => desiredObject; set => desiredObject = value; }
+    public ProductPreset DesiredObject { get => desiredObject; set => desiredObject = value; }
 
     private void Awake()
     {
@@ -52,8 +52,9 @@ public class BabyManager : MonoBehaviour
         toiletNeed = Random.Range(0, 50);
         brain = GetComponent<StateMachine>();
         NormalHappinessDecreaseRatio = happinessDecreaseRatio;
-        wantItemsTiming= Random.Range(45,150);
+        wantItemsTiming= Random.Range(45,120);
         animator= GetComponent<Animator>();
+        brain.PushState(OnDefault, null, null);
     }
 
     private void Update()
@@ -136,13 +137,20 @@ public class BabyManager : MonoBehaviour
     private void OnAngry()
     {
         //TODO sonido furioso
-        SelectState();
+        if (Happiness > 20)
+        {
+            SelectState();
+        }
     }
 
     private void OnDefault()
     {
         //TODO sonido default
-        SelectState();
+        if (Happiness < 40 || Happiness > 60)
+        {
+            Debug.Log("default");
+            SelectState();
+        }
     }
 
     private void OnSadExit()
@@ -151,11 +159,18 @@ public class BabyManager : MonoBehaviour
     }
     private void OnSad()
     {
-        if (Random.Range(0, 100) <= throwItemsChance && canThrowItem)
+        if (timer % 15 == 0)
         {
-            ThrowItem();
+            if (Random.Range(0, 100) <= throwItemsChance && canThrowItem)
+            {
+                ThrowItem();
+            }
         }
-        SelectState();
+        if (Happiness < 20 || Happiness > 40)
+        {
+            Debug.Log("sad");
+            SelectState();
+        }
         //TODO sonido triste 
     }
 
@@ -176,7 +191,8 @@ public class BabyManager : MonoBehaviour
     }
     private void OnCry()
     {
-        SelectState();
+        if (toiletNeed < 100)
+            SelectState();
         happinessDecreaseRatio = IncreasedHappinessDecreaseRatio;
         //TODO  sonido llorar
     }
@@ -191,7 +207,8 @@ public class BabyManager : MonoBehaviour
 
     private void OnVeryHappy()
     {
-        SelectState();
+        if (Happiness < 80)
+            SelectState();
         //TODO sonido muy feliz
     }
     private void OnHappyExit()
@@ -207,13 +224,23 @@ public class BabyManager : MonoBehaviour
     private void OnHappy()
     {
         //TODO sonido feliz
-        SelectState();
+        if (Happiness < 60 || Happiness > 80)
+            SelectState();
     }
 
     public void Entertain()
     {
-        //TODO Animacion de entretener al bebe
+        animator.SetBool("IsBeeingEntertained", true);
         happiness += entertainHappinessIncrease;
+        firstOption.GetComponent<Button>().onClick.RemoveAllListeners();
+        secondOption.GetComponent<Button>().onClick.RemoveAllListeners();
+        thirdOption.GetComponent<Button>().onClick.RemoveAllListeners();
+        firstOption.GetComponentInChildren<TMP_Text>().text = "";
+        secondOption.GetComponentInChildren<TMP_Text>().text = "";
+        thirdOption.GetComponentInChildren<TMP_Text>().text = "";
+        firstOption.SetActive(false);
+        secondOption.SetActive(false);
+        thirdOption.SetActive(false);
     }
 
     public void CleanBaby()
@@ -226,7 +253,7 @@ public class BabyManager : MonoBehaviour
         thirdOption.GetComponentInChildren<TMP_Text>().text = "";
         secondOption.SetActive(false);
         thirdOption.SetActive(false);
-        //TODO sonido cambiar pañal y fade to black
+        //TODO sonido cambiar pañal 
         if (toiletNeed < 100)
         {
             npcPhrase.GetComponent<TMP_Text>().text = "El bebe está limpio";
@@ -246,6 +273,7 @@ public class BabyManager : MonoBehaviour
         GameObject objectThrown = Inventory.Instance.RemoveItemFromInventory();
         if (objectThrown != null)
         {
+            animator.SetBool("IsThrowingObject", true);
             //TODO animacion lanzar objeto y lanzar el objeto
             PopUpManager.instance.CreatePopUp("", Color.green, "El bebé ha tirado un objeto.");
         }
@@ -258,6 +286,10 @@ public class BabyManager : MonoBehaviour
         Invoke("AvailThrowItem", 20f);
         
     }
+    public void EndedThrowingObject()
+    {
+        animator.SetBool("IsThrowingObject", false);
+    }
     void AvailThrowItem()
     {
         canThrowItem = true;
@@ -267,7 +299,7 @@ public class BabyManager : MonoBehaviour
     {
         //TODO incluir items deseado en la lista,
         DesiredObject = desiredObjectList[Random.Range(0, desiredObjectList.Count - 1)];
-        PopUpManager.instance.CreatePopUp("", Color.green, "El bebé quiere: " + DesiredObject);
+        PopUpManager.instance.CreatePopUp("", Color.green, "El bebé quiere: " + DesiredObject.name);
         Invoke("UncollectedBabyItem", 30f);
     }
     public void UncollectedBabyItem()
@@ -289,7 +321,9 @@ public class BabyManager : MonoBehaviour
     }
     public void OpenBabyOptions()
     {
+        animator.SetBool("IsBeeingEntertained", false);
         CanTalk = false;
+        firstOption.SetActive(true);
         secondOption.SetActive(true);
         thirdOption.SetActive(true);
         Cursor.visible = true;

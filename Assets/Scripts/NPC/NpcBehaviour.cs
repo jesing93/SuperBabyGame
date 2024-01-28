@@ -180,7 +180,6 @@ public class NpcBehaviour : MonoBehaviour
         do {
             randomShelve=(int)Random.Range(0, shelvesStopPoints.Count);
         }while (shelvesStopPoints[randomShelve].GetComponentInParent<ShelvesManager>().IsBusyNpc && shelvesStopPoints[randomShelve].GetComponentInParent<ShelvesManager>().IsBusyPlayer) ;
-        Debug.Log(!shelvesStopPoints[randomShelve].GetComponentInParent<ShelvesManager>().IsBusyNpc && !shelvesStopPoints[randomShelve].GetComponentInParent<ShelvesManager>().IsBusyPlayer);
         nearestPoint = shelvesStopPoints[randomShelve].transform.position;
         busyShelve = shelvesStopPoints[randomShelve];
         busyShelve.GetComponentInParent<ShelvesManager>().ChangeAvailavility(true);
