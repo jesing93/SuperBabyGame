@@ -144,6 +144,13 @@ public class BabyManager : MonoBehaviour
     private void OnAngry()
     {
         //TODO sonido furioso
+        if (timer % 15 == 0)
+        {
+            if (Random.Range(0, 100) <= throwItemsChance && canThrowItem)
+            {
+                ThrowItem();
+            }
+        }
         if (Happiness > 20)
         {
             SelectState();
