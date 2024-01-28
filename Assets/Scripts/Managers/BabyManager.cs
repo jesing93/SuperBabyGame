@@ -50,6 +50,7 @@ public class BabyManager : MonoBehaviour
     private ProductPreset desiredObject;
     private bool canTalk = true;
     private float angryTimer;
+    public Slider happySlider;
     public float Happiness { get => happiness; set => happiness = value; }
     public int NormalHappinessDecreaseRatio { get => normalHappinessDecreaseRatio; set => normalHappinessDecreaseRatio = value; }
     public bool CanTalk { get => canTalk; set => canTalk = value; }
@@ -68,6 +69,7 @@ public class BabyManager : MonoBehaviour
         animator= GetComponent<Animator>();
         brain.PushState(OnDefault, null, null);
         babySource = GetComponent<AudioSource>();   
+        
     }
 
     private void Update()
@@ -94,6 +96,7 @@ public class BabyManager : MonoBehaviour
             hasRequestedItem = true;
             WantItem();
         }
+        happySlider.value = happiness;
     }
 
     private void IncreaseToiletNeed()
