@@ -7,7 +7,7 @@ using UnityEngine;
 public class Inventory : MonoBehaviour
 {
     private Dictionary<ProductPreset, ShoppingItem> shoppingList;
-    public List<ProductPreset> uiList = new();
+    public List<ProductType> uiList = new();
     public static Inventory Instance;
     private int itemsNeeded = 0;
     private int currentItems = 0;
@@ -44,23 +44,28 @@ public class Inventory : MonoBehaviour
             currentItem.Needed += quantity;
             ShoppingList[item] = currentItem;
 
-            ShoppingList.TryGetValue(item, out ShoppingItem itemData);
-            ShoppingListManager.instance.UpdateProduct(uiList.IndexOf(item), "- " + item.productName + " " + itemData.Current + "/" + itemData.Needed);
-
         }
         else
         {
-            uiList.Add(item);
             ShoppingList.Add(item, new ShoppingItem(0, quantity));
+
             //TODO: Add to UI list
             //item.productName;
 
-            if(ShoppingList.TryGetValue(item, out ShoppingItem itemData))
-            {
-                ShoppingListManager.instance.AddProduct("- " + item.productName + " " + itemData.Current + "/" + itemData.Needed);
-            }
+        }
+        if (uiList.Contains(item.type))
+        {
+            ShoppingList.TryGetValue(item, out ShoppingItem itemData);
+            ShoppingListManager.instance.UpdateProduct(uiList.IndexOf(item.type), "- " + item.productName + " " + itemData.Current + "/" + itemData.Needed);
+        }
+        else
+        {
+            uiList.Add(item.type);
+            ShoppingList.TryGetValue(item, out ShoppingItem itemData);
+            ShoppingListManager.instance.AddProduct("- " + item.productName + " " + itemData.Current + "/" + itemData.Needed);
         }
         itemsNeeded++;
+        
     }
 
     /// <summary>
@@ -98,6 +103,12 @@ public class Inventory : MonoBehaviour
             ShoppingList.Add(item, newItem);
             Debug.Log("Ahora tienes 1 de 0" + item.productName);
         }
+        if (uiList.Contains(item.type))
+        {
+            ShoppingList.TryGetValue(item, out ShoppingItem itemData);
+            ShoppingListManager.instance.UpdateProduct(uiList.IndexOf(item.type), "- " + item.productName + " " + itemData.Current + "/" + itemData.Needed);
+        }
+        
     }
 
     /// <summary>
@@ -139,6 +150,11 @@ public class Inventory : MonoBehaviour
                     GameObject outItem = tempItem.Items[outItemId];
                     tempItem.Items.RemoveAt(outItemId);
                     ShoppingList[randomItem.Key] = tempItem;
+                    if (uiList.Contains(item.type))
+                    {
+                        ShoppingList.TryGetValue(item, out ShoppingItem itemData);
+                        ShoppingListManager.instance.UpdateProduct(uiList.IndexOf(item.type), "- " + item.productName + " " + itemData.Current + "/" + itemData.Needed);
+                    }
                     return outItem;
                 }
             }
@@ -162,6 +178,11 @@ public class Inventory : MonoBehaviour
                 currentItem.Items.RemoveAt(outItemId);
                 ShoppingList[item] = currentItem;
                 Debug.Log("Ahora tienes " + currentItem.Current + " de " + currentItem.Needed + " " + item.productName);
+                if (uiList.Contains(item.type))
+                {
+                    ShoppingList.TryGetValue(item, out ShoppingItem itemData);
+                    ShoppingListManager.instance.UpdateProduct(uiList.IndexOf(item.type), "- " + item.productName + " " + itemData.Current + "/" + itemData.Needed);
+                }
                 return outItem;
             }
             else
