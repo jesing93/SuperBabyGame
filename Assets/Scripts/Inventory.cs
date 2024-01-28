@@ -13,6 +13,8 @@ public class Inventory : MonoBehaviour
     public List<ProductPreset> itemPresets;
     private int shoppingListLength = 10;
 
+    public Dictionary<ProductPreset, ShoppingItem> ShoppingList1 { get => ShoppingList; set => ShoppingList = value; }
+
     private void Awake()
     {
         Instance = this;

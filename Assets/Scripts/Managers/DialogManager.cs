@@ -280,7 +280,15 @@ public class DialogManager : MonoBehaviour
                 firstOption.GetComponentInChildren<TMP_Text>().text = "1) Marcharte.";
                 firstOption.GetComponent<Button>().onClick.AddListener(CloseDialog);
                 ActiveOptions();
-                // TODO Guiar hasta siguiente objeto de la lista
+                npcBehaviour.GuideToObject = true;
+                foreach (var listItem in Inventory.Instance.ShoppingList1)
+                {
+                    if (listItem.Value.Items.Count == 0)
+                    {
+                        npcBehaviour.ObjectToGuide =GameObject.Find(listItem.Key.name);
+                        break;
+                    }
+                }
         }
 
     }

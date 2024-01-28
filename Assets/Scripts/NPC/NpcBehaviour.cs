@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 using UnityEngine.AI;
 
@@ -7,6 +8,8 @@ public class NpcBehaviour : MonoBehaviour
 {
     [SerializeField] private NpcData npcData;
     [SerializeField] private GameObject shelves;
+    [SerializeField] private GameObject tearParticles;
+    [SerializeField] private GameObject stunParticles;
     [SerializeField] private List<GameObject> shelvesStopPoints;
     [SerializeField] private float maxWalkingDistance;
     [SerializeField] private float stopInShelveRate;
@@ -16,6 +19,9 @@ public class NpcBehaviour : MonoBehaviour
     [SerializeField] private GameObject player;
     [SerializeField] private int maxAggressionTimes;
 
+    private GameObject objectToGuide;
+    private bool returnToDefaultPosition;
+    private bool guideToObject;
     private bool guardTalkedToPlayer;
     private int agrresionCount;
     private bool playerIsAggressive;
@@ -38,6 +44,8 @@ public class NpcBehaviour : MonoBehaviour
     public int MaxAggressionTimes { get => maxAggressionTimes; set => maxAggressionTimes = value; }
     public bool GuardTalkedToPlayer { get => guardTalkedToPlayer; set => guardTalkedToPlayer = value; }
     public bool IsStoppedInShelve { get => isStoppedInShelve; set => isStoppedInShelve = value; }
+    public bool GuideToObject { get => guideToObject; set => guideToObject = value; }
+    public GameObject ObjectToGuide { get => objectToGuide; set => objectToGuide = value; }
 
     private void Awake()
     {
@@ -94,6 +102,7 @@ public class NpcBehaviour : MonoBehaviour
                 {
                     if (!stopCry)
                     {
+                        tearParticles.SetActive(true);
                         stopCry = true;
                         Invoke("StopCrying", 40f);
                     }
@@ -160,10 +169,39 @@ public class NpcBehaviour : MonoBehaviour
                     }
                 }
             }
-            agent.SetDestination(NextPoint);
+            if (NpcData.NpcType.Equals(NpcType.shopkeeper))
+            {
+                if (GuideToObject)
+                {
+                    agent.SetDestination(objectToGuide.transform.position);
+                    if (!agent.pathPending && agent.remainingDistance <1f)
+                    {
+                        PopUpManager.instance.CreatePopUp("Shopkeeper", Color.white, "El objeto está en esta estanteria.");
+                        Invoke("ReturnToDefault",5f);
+                    }
+                 }
+                if (returnToDefaultPosition)
+                {
+                    agent.SetDestination(NextPoint);
+                    if (!agent.pathPending && agent.remainingDistance < 0.1f)
+                    {
+                        returnToDefaultPosition = false;
+                    }
+                    }
+                   
+            }
+            else
+            {
+                agent.SetDestination(NextPoint);
+            }
+            
         }
     }
-
+    void ReturnToDefault()
+    {
+        GuideToObject = false;
+        returnToDefaultPosition = true;
+    }
     private void StopFollowingPlayer()
     {
         followPlayer = false;
@@ -204,6 +242,7 @@ public class NpcBehaviour : MonoBehaviour
 
     void StopCrying()
     {
+        tearParticles.SetActive(false);
         dialogManager.GuardIsCrying = false;
         stopCry = false;
     }
@@ -219,6 +258,7 @@ public class NpcBehaviour : MonoBehaviour
                 Invoke("EndPlayerIsAggressive", 20f);
                 if (npcData.IsStuneable)
                 {
+                    stunParticles.SetActive(true);
                     npcStunned = true;
                     if (IsStoppedInShelve)
                     {
@@ -232,6 +272,7 @@ public class NpcBehaviour : MonoBehaviour
     }
     void EndStun()
     {
+        stunParticles.SetActive(false);
         npcStunned = false;
     }
     void EndPlayerIsAggressive()
