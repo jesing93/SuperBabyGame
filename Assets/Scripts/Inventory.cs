@@ -12,7 +12,7 @@ public class Inventory : MonoBehaviour
     private int itemsNeeded = 0;
     private int currentItems = 0;
     public List<ProductPreset> itemPresets;
-    private int shoppingListLength = 5;
+    private int shoppingListLength = 2;
 
     public Dictionary<ProductPreset, ShoppingItem> ShoppingList { get => shoppingList; set => shoppingList = value; }
 

@@ -141,6 +141,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: eea3e11f8a3852c4aaf8184d7356a79d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  uiList: []
   itemPresets:
   - {fileID: 11400000, guid: 8fe2052b20f2ddd4790cf3b6523e409f, type: 2}
   - {fileID: 11400000, guid: 257a820387b6d414ba9e8644de4d7b6d, type: 2}
@@ -167,7 +168,6 @@ MonoBehaviour:
   - {fileID: 11400000, guid: c2699636b5bf6624f8c224138c1fcc92, type: 2}
   - {fileID: 11400000, guid: d110924c3cdfb094c98fa2e51e9c2bf9, type: 2}
   - {fileID: 11400000, guid: 7eefd1e0fd7a5564288217b5c7aff9f3, type: 2}
-  - {fileID: 11400000, guid: 155e5c886cf97d848a0afc5433453106, type: 2}
   - {fileID: 11400000, guid: ec2e1ea15f8334c4999b1e3cb7c2f370, type: 2}
   - {fileID: 11400000, guid: 7309572aa1c11fd4bb22d5bdada506ef, type: 2}
   - {fileID: 11400000, guid: e700bf8ad6a799047b92fabd82ba07f5, type: 2}
@@ -310,6 +310,34 @@ PrefabInstance:
       propertyPath: m_IsTrigger
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 9054664974256825868, guid: 9f9eb4341b8b75444b3e952ff93450f5, type: 3}
+      propertyPath: desiredObjectList.Array.size
+      value: 6
+      objectReference: {fileID: 0}
+    - target: {fileID: 9054664974256825868, guid: 9f9eb4341b8b75444b3e952ff93450f5, type: 3}
+      propertyPath: desiredObjectList.Array.data[0]
+      value: 
+      objectReference: {fileID: 11400000, guid: fc1919c5a8580734e839681114a600b8, type: 2}
+    - target: {fileID: 9054664974256825868, guid: 9f9eb4341b8b75444b3e952ff93450f5, type: 3}
+      propertyPath: desiredObjectList.Array.data[1]
+      value: 
+      objectReference: {fileID: 11400000, guid: c185c2b1356c32045bf82e86086b2a8f, type: 2}
+    - target: {fileID: 9054664974256825868, guid: 9f9eb4341b8b75444b3e952ff93450f5, type: 3}
+      propertyPath: desiredObjectList.Array.data[2]
+      value: 
+      objectReference: {fileID: 11400000, guid: 2d7ccd6760b379f4a808c527eb9bdd1f, type: 2}
+    - target: {fileID: 9054664974256825868, guid: 9f9eb4341b8b75444b3e952ff93450f5, type: 3}
+      propertyPath: desiredObjectList.Array.data[3]
+      value: 
+      objectReference: {fileID: 11400000, guid: e700bf8ad6a799047b92fabd82ba07f5, type: 2}
+    - target: {fileID: 9054664974256825868, guid: 9f9eb4341b8b75444b3e952ff93450f5, type: 3}
+      propertyPath: desiredObjectList.Array.data[4]
+      value: 
+      objectReference: {fileID: 11400000, guid: 024b3a4e006377b469a7a0e0f7c028a3, type: 2}
+    - target: {fileID: 9054664974256825868, guid: 9f9eb4341b8b75444b3e952ff93450f5, type: 3}
+      propertyPath: desiredObjectList.Array.data[5]
+      value: 
+      objectReference: {fileID: 11400000, guid: 7eefd1e0fd7a5564288217b5c7aff9f3, type: 2}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
