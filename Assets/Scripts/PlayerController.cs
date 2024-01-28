@@ -87,7 +87,7 @@ public class PlayerController : MonoBehaviour
             Ray ray = new(playerHead.transform.position, playerHead.transform.forward);
             RaycastHit hit;
             Debug.DrawRay(playerHead.transform.position, playerHead.transform.forward * 3, Color.red, .5f);
-            if (Physics.Raycast(ray, out hit, 3f,  ~CartLayer & ~ShelveLayer))
+            if (Physics.Raycast(ray, out hit, 4f,  ~CartLayer & ~ShelveLayer))
             {
                 if (hit.collider.CompareTag("Product")) //Pick up
                 {
