@@ -118,13 +118,20 @@ public class NpcBehaviour : MonoBehaviour
                 {
                     NextPoint = player.transform.position;
                 }
-                if (agent.remainingDistance < 3.5f)
-                {
 
-                    if (followPlayer)
+
+                if (followPlayer && agent.remainingDistance < 3.5f)
+                {
+                    dialogManager.OpenDialog();
+                    followPlayer = false;
+
+                }
+
+                else if (!agent.pathPending && agent.remainingDistance < 0.1f)
+                {
+                    if (IsStoppedInShelve)
                     {
-                        dialogManager.OpenDialog();
-                        followPlayer = false;
+                        Invoke("LeaveShelve", stopInTime);
                     }
                     if (Random.Range(0, 100) < findPlayerRate)
                     {
@@ -144,6 +151,7 @@ public class NpcBehaviour : MonoBehaviour
                         }
                     }
                 }
+
             }
 
             //CLIENTS LOGIC
@@ -169,6 +177,7 @@ public class NpcBehaviour : MonoBehaviour
                     }
                 }
             }
+            //Shopkeeper logic
             if (NpcData.NpcType.Equals(NpcType.shopkeeper))
             {
                 if (GuideToObject)
