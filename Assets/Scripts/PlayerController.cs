@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using UnityEditor;
 using UnityEditor.SearchService;
 using UnityEngine;
 using UnityEngine.EventSystems;
@@ -12,6 +13,7 @@ public class PlayerController : MonoBehaviour
     private PlayerInput playerInput;
     public GameObject playerHead;
     public GameObject handSlot;
+    public GameObject cartSlot;
 
     //Vars
     private float moveSpeed = 5;
@@ -25,6 +27,8 @@ public class PlayerController : MonoBehaviour
     private float mouseX;
     private Vector2 moveInput;
     private GameObject inHand = null;
+    private bool isCartGrabbed = false;
+    private GameObject cartObject;
 
     private bool isOnDialog;
 
@@ -65,32 +69,39 @@ public class PlayerController : MonoBehaviour
 
     public void Interact()
     {
-        Ray ray = new(playerHead.transform.position, playerHead.transform.forward);
-        RaycastHit hit;
-        Debug.DrawRay(playerHead.transform.position, playerHead.transform.forward * 3, Color.red, .5f);
-        if (Physics.Raycast(ray, out hit, 3f, ~CartLayer))
+        if (!isCartGrabbed)
         {
-            if (hit.collider.CompareTag("Product")) //Pick up
+            Ray ray = new(playerHead.transform.position, playerHead.transform.forward);
+            RaycastHit hit;
+            Debug.DrawRay(playerHead.transform.position, playerHead.transform.forward * 3, Color.red, .5f);
+            if (Physics.Raycast(ray, out hit, 3f, ~CartLayer))
             {
-                if (hit.collider.transform.parent != null)
+                if (hit.collider.CompareTag("Product")) //Pick up
                 {
-                    if (hit.collider.transform.parent.TryGetComponent<ShelvesManager>(out ShelvesManager shelve))
+                    if (hit.collider.transform.parent != null)
                     {
-                        if (!shelve.IsBusyNpc)
+                        if (hit.collider.transform.parent.TryGetComponent<ShelvesManager>(out ShelvesManager shelve))
                         {
-                            if (inHand == null)
+                            if (!shelve.IsBusyNpc)
                             {
-                                PickUp(hit.collider.gameObject);
+                                if (inHand == null)
+                                {
+                                    PickUp(hit.collider.gameObject);
+                                }
+                                else
+                                {
+                                    Debug.Log("Hands full");
+                                }
                             }
                             else
                             {
-                                Debug.Log("Hands full");
+                                Debug.Log("Shelf busy");
+                                //TODO: Popup shelf busy
                             }
                         }
                         else
                         {
-                            Debug.Log("Shelf busy");
-                            //TODO: Popup shelf busy
+                            PickUp(hit.collider.gameObject);
                         }
                     }
                     else
@@ -98,35 +109,42 @@ public class PlayerController : MonoBehaviour
                         PickUp(hit.collider.gameObject);
                     }
                 }
+                else if (hit.collider.CompareTag("Npc"))
+                {
+                    if (hit.collider.GetComponent<DialogManager>().CanTalk)
+                    {
+                        hit.collider.GetComponent<DialogManager>().OpenDialog();
+                    }
+
+                }
+                else if (hit.collider.CompareTag("Baby"))
+                {
+
+                    if (hit.collider.GetComponent<BabyManager>().CanTalk)
+                    {
+                        hit.collider.GetComponent<BabyManager>().OpenBabyOptions();
+                    }
+                }
+                else if (hit.collider.CompareTag("Cart"))
+                {
+                    if(cartObject == null)
+                    {
+                        cartObject = hit.collider.gameObject;
+                    }
+                    isCartGrabbed = true;
+                    hit.transform.SetParent(cartSlot.transform);
+                    hit.transform.position = cartSlot.transform.position;
+                    hit.transform.rotation = cartSlot.transform.rotation;
+                }
                 else
                 {
-                    PickUp(hit.collider.gameObject);
-                }
-            }
-            else if (hit.collider.CompareTag("Npc"))
-            {
-                if (hit.collider.GetComponent<DialogManager>().CanTalk)
-                {
-                    hit.collider.GetComponent<DialogManager>().OpenDialog();
-                }
-               
-            }
-            else if (hit.collider.CompareTag("Baby"))
-            {
-
-                if (hit.collider.GetComponent<BabyManager>().CanTalk)
-                {
-                    hit.collider.GetComponent<BabyManager>().OpenBabyOptions();
+                    Debug.Log("Invalid");
                 }
             }
             else
             {
-                Debug.Log("Invalid");
+                Debug.Log("None");
             }
-        }
-        else
-        {
-            Debug.Log("None");
         }
     }
 
@@ -144,17 +162,24 @@ public class PlayerController : MonoBehaviour
 
     public void Throw()
     {
-        if (inHand != null)
+        if (isCartGrabbed)
         {
-            Debug.Log("Throw");
-            inHand.transform.SetParent(null);
-            inHand.GetComponent<Rigidbody>().isKinematic = false;
-            inHand.GetComponent<Rigidbody>().AddForce(playerHead.transform.forward * throwStrength);
-            inHand = null;
+            cartObject.transform.SetParent(null);
+            isCartGrabbed = false;
         }
-        else
-        {
-            Debug.Log("Nothing in hand");
+        else { 
+            if (inHand != null)
+            {
+                Debug.Log("Throw");
+                inHand.transform.SetParent(null);
+                inHand.GetComponent<Rigidbody>().isKinematic = false;
+                inHand.GetComponent<Rigidbody>().AddForce(playerHead.transform.forward * throwStrength);
+                inHand = null;
+            }
+            else
+            {
+                Debug.Log("Nothing in hand");
+            }
         }
     }
 
