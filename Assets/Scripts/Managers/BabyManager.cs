@@ -242,7 +242,15 @@ public class BabyManager : MonoBehaviour
     public void Entertain()
     {
         animator.SetBool("IsBeeingEntertained", true);
-        happiness += entertainHappinessIncrease;
+        if (happiness + entertainHappinessIncrease >= 100)
+        {
+            happiness = 100;
+        }
+        else
+        {
+            happiness += entertainHappinessIncrease;
+        }
+        
         firstOption.GetComponent<Button>().onClick.RemoveAllListeners();
         secondOption.GetComponent<Button>().onClick.RemoveAllListeners();
         thirdOption.GetComponent<Button>().onClick.RemoveAllListeners();
@@ -322,7 +330,14 @@ public class BabyManager : MonoBehaviour
     public void UncollectedBabyItem()
     {
         if (DesiredObject != null) {
-            happiness -= 20;
+            if (happiness - 20 <= 0)
+            {
+                happiness = 0;
+            }
+            else
+            {
+                happiness -= 20;
+            }
             happinessDecreaseRatio = IncreasedHappinessDecreaseRatio;
             DesiredObject = null;
         }
@@ -338,7 +353,7 @@ public class BabyManager : MonoBehaviour
     }
     public void OpenBabyOptions()
     {
-        animator.SetBool("IsBeeingEntertained", false);
+        
         CanTalk = false;
         firstOption.SetActive(true);
         secondOption.SetActive(true);
@@ -354,6 +369,7 @@ public class BabyManager : MonoBehaviour
         firstOption.GetComponent<Button>().onClick.AddListener(Entertain);
         secondOption.GetComponent<Button>().onClick.AddListener(CleanBaby);
         thirdOption.GetComponent<Button>().onClick.AddListener(CloseDialog);
+        animator.SetBool("IsBeeingEntertained", false);
     }
     void CloseDialog()
     {
