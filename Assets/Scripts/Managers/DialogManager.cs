@@ -281,7 +281,7 @@ public class DialogManager : MonoBehaviour
                 firstOption.GetComponent<Button>().onClick.AddListener(CloseDialog);
                 ActiveOptions();
                 npcBehaviour.GuideToObject = true;
-                foreach (var listItem in Inventory.Instance.ShoppingList1)
+                foreach (var listItem in Inventory.Instance.ShoppingList)
                 {
                     if (listItem.Value.Items.Count == 0)
                     {

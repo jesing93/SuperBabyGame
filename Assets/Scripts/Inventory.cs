@@ -6,14 +6,15 @@ using UnityEngine;
 
 public class Inventory : MonoBehaviour
 {
-    private Dictionary<ProductPreset, ShoppingItem> ShoppingList;
+    private Dictionary<ProductPreset, ShoppingItem> shoppingList;
+    public List<ProductPreset> uiList = new();
     public static Inventory Instance;
     private int itemsNeeded = 0;
     private int currentItems = 0;
     public List<ProductPreset> itemPresets;
     private int shoppingListLength = 10;
 
-    public Dictionary<ProductPreset, ShoppingItem> ShoppingList1 { get => ShoppingList; set => ShoppingList = value; }
+    public Dictionary<ProductPreset, ShoppingItem> ShoppingList { get => shoppingList; set => shoppingList = value; }
 
     private void Awake()
     {
@@ -22,7 +23,7 @@ public class Inventory : MonoBehaviour
         List<ProductPreset> shuffledList = itemPresets.OrderBy(x => Random.value).ToList().ConvertAll(input => input as ProductPreset);
         for (int i = 0; i < shoppingListLength; i++)
         {
-            //AddShoppingItem(shuffledList[i]);
+            AddShoppingItem(shuffledList[i]);
         }
     }
 
@@ -33,15 +34,25 @@ public class Inventory : MonoBehaviour
     /// <param name="quantity"></param>
     public void AddShoppingItem(ProductPreset item, int quantity = 1)
     {
-        if(ShoppingList.ContainsKey(item))
+        if (ShoppingList.ContainsKey(item))
         {
             ShoppingItem currentItem = ShoppingList[item];
             currentItem.Needed += quantity;
             ShoppingList[item] = currentItem;
+
+            ShoppingList.TryGetValue(item, out ShoppingItem itemData);
+            ShoppingListManager.instance.UpdateProduct(uiList.IndexOf(item), "- " + item.productName + " " + itemData.Current + "/" + itemData.Needed);
+
         }
         else
         {
+            uiList.Add(item);
             ShoppingList.Add(item, new ShoppingItem(0, quantity));
+            //TODO: Add to UI list
+            //item.productName;
+
+            ShoppingList.TryGetValue(item, out ShoppingItem itemData);
+            ShoppingListManager.instance.AddProduct("- " + item.productName + " " + itemData.Current + "/" + itemData.Needed);
         }
         itemsNeeded++;
     }
