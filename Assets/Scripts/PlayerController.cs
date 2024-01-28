@@ -90,7 +90,7 @@ public class PlayerController : MonoBehaviour
                         else
                         {
                             Debug.Log("Shelf busy");
-                            //TODO: Popup shelf busy
+                            PopUpManager.instance.CreatePopUp("", Color.white, "La estantería está ocupada.");
                         }
                     }
                     else
