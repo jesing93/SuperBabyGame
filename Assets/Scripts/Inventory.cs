@@ -12,7 +12,7 @@ public class Inventory : MonoBehaviour
     private int itemsNeeded = 0;
     private int currentItems = 0;
     public List<ProductPreset> itemPresets;
-    private int shoppingListLength = 10;
+    private int shoppingListLength = 5;
 
     public Dictionary<ProductPreset, ShoppingItem> ShoppingList { get => shoppingList; set => shoppingList = value; }
 
@@ -87,7 +87,7 @@ public class Inventory : MonoBehaviour
                 if(currentItems == itemsNeeded)
                 {
                     Debug.Log("Win");
-                    //TODO: Call Gamemanager.Win
+                    GameManager.Instance.Victory();
                 }
             }
         }

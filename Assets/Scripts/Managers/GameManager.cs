@@ -7,6 +7,7 @@ using UnityEngine.SceneManagement;
 
 public class GameManager : MonoBehaviour
 {
+    public static GameManager Instance;
 
     public GameObject menuPause;
     public GameObject menuOptions;
@@ -21,7 +22,12 @@ public class GameManager : MonoBehaviour
     public GameObject panelDerrota;
     public GameObject panelVictoria;
     public GameObject panelDialog;
-    
+
+    private void Awake()
+    {
+        Instance = this;
+    }
+
     void Start()
     {
         isGameStarted = true;
@@ -79,6 +85,7 @@ public class GameManager : MonoBehaviour
     public void Timing()
     {
         Time.timeScale = 0.0f;
+        PlayerController.Instance.TogglePause();
         sliderPoint.SetActive(false);
         isGameEnded = true;
         panelDerrota.SetActive(true);
@@ -118,6 +125,11 @@ public class GameManager : MonoBehaviour
     }
     public void Victory()
     {
+        Time.timeScale = 0.0f;
+        PlayerController.Instance.TogglePause();
+        isGameEnded = true;
         panelVictoria.SetActive(true);
+        Cursor.lockState = CursorLockMode.None;
+        Cursor.visible = true;
     }
 }
