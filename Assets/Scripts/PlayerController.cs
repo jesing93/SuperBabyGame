@@ -9,13 +9,14 @@ using UnityEngine.InputSystem.HID;
 
 public class PlayerController : MonoBehaviour
 {
-    //COmponents
+    //Components
     private PlayerInput playerInput;
     public GameObject playerHead;
     public GameObject handSlot;
     public GameObject cartSlot;
     public AudioClip pickSound;
     public AudioClip steps;
+    private CharacterController characterController;
 
     //Vars
     private float moveSpeed = 5;
@@ -41,7 +42,9 @@ public class PlayerController : MonoBehaviour
     {
         CartLayer = LayerMask.GetMask("Cart");
         playerInput = new PlayerInput();
-        audioPlayer=GetComponent<AudioSource>();
+        audioPlayer = GetComponent<AudioSource>();
+        characterController = GetComponent<CharacterController>();
+
         //Assign this function to the input event
         playerInput.Character.Move.performed += ctx => Move(ctx);
         playerInput.Character.Move.canceled += ctx => Move(ctx);
@@ -224,7 +227,8 @@ public class PlayerController : MonoBehaviour
             }
             //Actual movement
             dir *= moveSpeed * Time.deltaTime;
-            transform.position += dir;
+            characterController.Move(dir);
+            //transform.position += dir;
         }
     }
 }
