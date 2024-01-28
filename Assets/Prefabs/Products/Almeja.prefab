@@ -14,7 +14,7 @@ GameObject:
   - component: {fileID: 976530309768147392}
   m_Layer: 0
   m_Name: Almeja
-  m_TagString: Untagged
+  m_TagString: Product
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0

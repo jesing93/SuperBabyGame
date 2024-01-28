@@ -14,7 +14,7 @@ GameObject:
   - component: {fileID: -5288968918886440355}
   m_Layer: 0
   m_Name: CongeladoCebolla
-  m_TagString: Untagged
+  m_TagString: Product
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0

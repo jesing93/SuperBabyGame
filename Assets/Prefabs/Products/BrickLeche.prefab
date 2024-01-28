@@ -14,7 +14,7 @@ GameObject:
   - component: {fileID: -4305280214150051524}
   m_Layer: 0
   m_Name: BrickLeche
-  m_TagString: Untagged
+  m_TagString: Product
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0

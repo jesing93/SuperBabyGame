@@ -14,7 +14,7 @@ GameObject:
   - component: {fileID: 3235278187259435674}
   m_Layer: 0
   m_Name: Fregona
-  m_TagString: Untagged
+  m_TagString: Product
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0

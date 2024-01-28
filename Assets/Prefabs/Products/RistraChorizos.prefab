@@ -14,7 +14,7 @@ GameObject:
   - component: {fileID: 2404257149541984609}
   m_Layer: 0
   m_Name: RistraChorizos
-  m_TagString: Untagged
+  m_TagString: Product
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0

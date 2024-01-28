@@ -5,6 +5,14 @@ using UnityEngine;
 public class CartManager : MonoBehaviour
 {
     List<GameObject> items = new ();
+
+    public static CartManager Instance;
+
+    private void Awake()
+    {
+        Instance = this;
+    }
+
     public void CatchContent()
     {
         Collider[] hitColliders = Physics.OverlapBox(gameObject.transform.position, transform.localScale / 2, transform.rotation);
@@ -27,5 +35,21 @@ public class CartManager : MonoBehaviour
             item.GetComponent<Rigidbody>().isKinematic = false;
         }
         items.Clear();
+    }
+
+    public GameObject GetRandomItem()
+    {
+        Collider[] hitColliders = Physics.OverlapBox(gameObject.transform.position, transform.localScale / 2, transform.rotation);
+        foreach (Collider collider in hitColliders)
+        {
+            if (collider.gameObject.CompareTag("Product"))
+            {
+                if (!collider.gameObject.GetComponent<Product>().preset.isHeavy)
+                {
+                    return collider.gameObject;
+                }
+            }
+        }
+        return null;
     }
 }

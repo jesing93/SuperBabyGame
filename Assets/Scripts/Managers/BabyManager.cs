@@ -323,7 +323,7 @@ public class BabyManager : MonoBehaviour
     private void ThrowItem()
     {
        
-         objectThrown = Inventory.Instance.RemoveItemFromInventory();
+         objectThrown = CartManager.Instance.GetRandomItem();
         if (objectThrown != null)
         {
             animator.SetBool("IsThrowingObject", true);

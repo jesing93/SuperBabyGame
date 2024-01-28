@@ -14,7 +14,7 @@ GameObject:
   - component: {fileID: -2945741581423477143}
   m_Layer: 0
   m_Name: PezRape
-  m_TagString: Untagged
+  m_TagString: Product
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
