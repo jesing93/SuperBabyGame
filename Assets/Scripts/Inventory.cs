@@ -59,7 +59,7 @@ public class Inventory : MonoBehaviour
             currentItem.Current ++;
             currentItem.Items.Add(itemObject);
             ShoppingList[item] = currentItem;
-            if(item.type == ProductType.Jamon) //If the item is the one the baby requested
+            if(item.type == ProductType.PataJamon) //If the item is the one the baby requested
             {
                 //TODO: Call the baby
             }
