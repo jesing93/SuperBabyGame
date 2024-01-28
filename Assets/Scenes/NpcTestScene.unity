@@ -618,6 +618,7 @@ GameObject:
   - component: {fileID: 156067900}
   - component: {fileID: 156067899}
   - component: {fileID: 156067898}
+  - component: {fileID: 156067902}
   m_Layer: 0
   m_Name: Player
   m_TagString: Untagged
@@ -674,7 +675,7 @@ Transform:
   m_GameObject: {fileID: 156067897}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 8.04, y: 1.5, z: -7.38}
+  m_LocalPosition: {x: 8.04, y: 0.947, z: -7.38}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -682,6 +683,33 @@ Transform:
   - {fileID: 456818205}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!54 &156067902
+Rigidbody:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 156067897}
+  serializedVersion: 4
+  m_Mass: 1
+  m_Drag: 0
+  m_AngularDrag: 0.05
+  m_CenterOfMass: {x: 0, y: 0, z: 0}
+  m_InertiaTensor: {x: 1, y: 1, z: 1}
+  m_InertiaRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ImplicitCom: 1
+  m_ImplicitTensor: 1
+  m_UseGravity: 0
+  m_IsKinematic: 0
+  m_Interpolate: 0
+  m_Constraints: 80
+  m_CollisionDetection: 0
 --- !u!1 &247568511
 GameObject:
   m_ObjectHideFlags: 0
@@ -1781,6 +1809,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: TearParticles
       objectReference: {fileID: 0}
+    - target: {fileID: 2430594316141955089, guid: 6c17e22c29a71d943b487a6b064c0d55, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 8372258837914876319, guid: 6c17e22c29a71d943b487a6b064c0d55, type: 3}
       propertyPath: m_LocalPosition.x
       value: 0
@@ -1847,6 +1879,10 @@ PrefabInstance:
     - target: {fileID: 3452825583612121533, guid: c1993f314472f2a4e925a212f7961275, type: 3}
       propertyPath: m_Name
       value: StarParticles
+      objectReference: {fileID: 0}
+    - target: {fileID: 3452825583612121533, guid: c1993f314472f2a4e925a212f7961275, type: 3}
+      propertyPath: m_IsActive
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 8914650452312282552, guid: c1993f314472f2a4e925a212f7961275, type: 3}
       propertyPath: m_LocalPosition.x
@@ -4738,6 +4774,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 1457332851104846562, guid: 96e3415c8a93f974cac89f30d75cb858, type: 3}
+      propertyPath: m_Convex
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 3028585447976035951, guid: 96e3415c8a93f974cac89f30d75cb858, type: 3}
       propertyPath: m_Name
       value: Estanteria de exposicion baja
@@ -4837,6 +4877,10 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 2205262360431948112, guid: 6a57ad4c8f708234da45ca563d76ba4a, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4186674879980938515, guid: 6a57ad4c8f708234da45ca563d76ba4a, type: 3}
+      propertyPath: m_Convex
       value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []

@@ -72,29 +72,36 @@ public class PlayerController : MonoBehaviour
         {
             if (hit.collider.CompareTag("Product")) //Pick up
             {
-                /*if (hit.collider.transform.parent.TryGetComponent<ShelvesManager>(out ShelvesManager shelve))
+                if (hit.collider.transform.parent != null)
                 {
-                    if (!shelve.IsBusyNpc)
+                    if (hit.collider.transform.parent.TryGetComponent<ShelvesManager>(out ShelvesManager shelve))
                     {
-                        if (inHand == null)
+                        if (!shelve.IsBusyNpc)
                         {
-                            PickUp(hit.collider.gameObject);
+                            if (inHand == null)
+                            {
+                                PickUp(hit.collider.gameObject);
+                            }
+                            else
+                            {
+                                Debug.Log("Hands full");
+                            }
                         }
                         else
                         {
-                            Debug.Log("Hands full");
+                            Debug.Log("Shelf busy");
+                            //TODO: Popup shelf busy
                         }
                     }
                     else
                     {
-                        Debug.Log("Shelf busy");
-                        //TODO: Popup shelf busy
+                        PickUp(hit.collider.gameObject);
                     }
                 }
                 else
-                {*/
+                {
                     PickUp(hit.collider.gameObject);
-                //}
+                }
             }
             else if (hit.collider.CompareTag("Npc"))
             {
