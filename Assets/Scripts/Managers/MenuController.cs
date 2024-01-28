@@ -4,6 +4,7 @@ using TMPro;
 using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.Audio;
+using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 public class MenuController : MonoBehaviour
 {
@@ -177,5 +178,9 @@ public class MenuController : MonoBehaviour
     {
 
         Screen.SetResolution(resolutions[index].width, resolutions[index].height, Screen.fullScreen);
+    }
+    public void Initiating()
+    {
+        SceneManager.LoadScene(1);
     }
 }

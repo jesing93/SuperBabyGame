@@ -20,6 +20,7 @@ public class GameManager : MonoBehaviour
     public GameObject paperInventory;
     public GameObject panelDerrota;
     public GameObject panelVictoria;
+    public GameObject panelDialog;
     
     void Start()
     {
@@ -61,6 +62,8 @@ public class GameManager : MonoBehaviour
         menuOptions.SetActive(false);
         Cursor.lockState = CursorLockMode.None;
         Cursor.visible = true;
+        PlayerController.Instance.TogglePause();
+        panelDialog.SetActive(false);
     }
     public void Unpause()
     {
@@ -71,6 +74,7 @@ public class GameManager : MonoBehaviour
         menuOptions.SetActive(false);
         Cursor.lockState = CursorLockMode.Locked;
         Cursor.visible = false;
+        PlayerController.Instance.TogglePause();
     }
     public void Timing()
     {
@@ -80,6 +84,7 @@ public class GameManager : MonoBehaviour
         panelDerrota.SetActive(true);
         Cursor.lockState = CursorLockMode.None;
         Cursor.visible = true;
+        panelDialog.SetActive(false);
     }
     public void Paper()
     {
