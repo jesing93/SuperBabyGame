@@ -14,7 +14,7 @@ public class GameManager : MonoBehaviour
     private bool isGameStarted;
     private bool isGameEnded;
     public Slider timeSlider;
-    public float timeStandard = 120;
+    public float timeStandard = 10;
     public GameObject sliderPoint;
     bool isCatched;
     public GameObject paperInventory;
@@ -70,7 +70,7 @@ public class GameManager : MonoBehaviour
     }
     public void Timing()
     {
-            Time.timeScale = 0.0f;
+            //Time.timeScale = 0.0f;
             sliderPoint.SetActive(false);
             isGameEnded = true;
             panelDerrota.SetActive(true);
