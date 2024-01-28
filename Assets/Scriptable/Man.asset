@@ -10,7 +10,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: fb4c2dfc6d1b2c94295485ad5fff3130, type: 3}
-  m_Name: Client
+  m_Name: Man
   m_EditorClassIdentifier: 
   NpcName: Npc 1
   npcType: 4

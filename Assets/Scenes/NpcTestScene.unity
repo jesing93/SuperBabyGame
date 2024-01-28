@@ -611,7 +611,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f4f19490f0b56e54ca2998d20dfa0f66, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  npcData: {fileID: 11400000, guid: e0ce8e0fadaa07c4eaf27b86af698230, type: 2}
+  npcData: {fileID: 11400000, guid: 3d086544239ce484c9c6b065fc32f512, type: 2}
   shelves: {fileID: 1560846560}
   tearParticles: {fileID: 0}
   stunParticles: {fileID: 0}
@@ -1290,7 +1290,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f4f19490f0b56e54ca2998d20dfa0f66, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  npcData: {fileID: 11400000, guid: 6a6f5797b95c90948937ab13578d9731, type: 2}
+  npcData: {fileID: 11400000, guid: 677f1de51d046c64ebcdfc84061526ed, type: 2}
   shelves: {fileID: 1560846560}
   tearParticles: {fileID: 0}
   stunParticles: {fileID: 0}
@@ -4589,9 +4589,8 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: -14.9, y: 1, z: -13.52}
-
-  m_LocalScale: {x: 0.3, y: 0.3, z: 0.3}
-  m_ConstrainProportionsScale: 1
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
