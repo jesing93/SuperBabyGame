@@ -4,6 +4,7 @@ using UnityEditor.SearchService;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.InputSystem;
+using UnityEngine.InputSystem.HID;
 
 public class PlayerController : MonoBehaviour
 {
@@ -71,24 +72,29 @@ public class PlayerController : MonoBehaviour
         {
             if (hit.collider.CompareTag("Product")) //Pick up
             {
-                if (hit.collider.transform.parent.TryGetComponent<ShelvesManager>(out ShelvesManager shelve))
+                /*if (hit.collider.transform.parent.TryGetComponent<ShelvesManager>(out ShelvesManager shelve))
                 {
-                    if (shelve.IsBusyNpc)
+                    if (!shelve.IsBusyNpc)
                     {
                         if (inHand == null)
                         {
-                            Debug.Log("Pick Product");
-                            inHand = hit.collider.gameObject;
-                            inHand.GetComponent<Rigidbody>().isKinematic = true;
-                            inHand.transform.SetParent(handSlot.transform);
-                            inHand.transform.position = handSlot.transform.position;
+                            PickUp(hit.collider.gameObject);
                         }
                         else
                         {
                             Debug.Log("Hands full");
                         }
                     }
+                    else
+                    {
+                        Debug.Log("Shelf busy");
+                        //TODO: Popup shelf busy
+                    }
                 }
+                else
+                {*/
+                    PickUp(hit.collider.gameObject);
+                //}
             }
             else if (hit.collider.CompareTag("Npc"))
             {
@@ -115,6 +121,18 @@ public class PlayerController : MonoBehaviour
         {
             Debug.Log("None");
         }
+    }
+
+    /// <summary>
+    /// Pick up item
+    /// </summary>
+    /// <param name="item"></param>
+    private void PickUp(GameObject item)
+    {
+        inHand = item;
+        inHand.GetComponent<Rigidbody>().isKinematic = true;
+        inHand.transform.SetParent(handSlot.transform);
+        inHand.transform.position = handSlot.transform.position;
     }
 
     public void Throw()
