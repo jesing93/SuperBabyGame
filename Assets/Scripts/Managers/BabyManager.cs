@@ -24,6 +24,9 @@ public class BabyManager : MonoBehaviour
     [SerializeField] private GameObject player;
     [SerializeField] private GameObject fadeBlack;
     [SerializeField] private GameObject grabPoint;
+    [SerializeField] private GameObject tearParticles;
+    [SerializeField] private GameObject poopParticles;
+    [SerializeField] private GameObject angerParticles;
     [SerializeField] private List<ProductPreset> desiredObjectList;
 
     public static BabyManager Instance;
@@ -128,11 +131,13 @@ public class BabyManager : MonoBehaviour
     private void OnAngryExit()
     {
         animator.SetBool("IsAngry", false);
+        angerParticles.SetActive(false);
     }
 
     private void OnAngryEnter()
     {
         animator.SetBool("IsAngry", true);
+        angerParticles.SetActive(true);
         PopUpManager.instance.CreatePopUp("", Color.green, "El bebé esta cabreado.");
     }
 
@@ -185,10 +190,14 @@ public class BabyManager : MonoBehaviour
     private void OnCryEnter()
     {
         animator.SetBool("IsCrying", true);
+        tearParticles.SetActive(true);
+        poopParticles.SetActive(true);
         PopUpManager.instance.CreatePopUp("",Color.green,"El bebé se ha hecho caca.");
     }
     private void OnCryExit()
     {
+        tearParticles.SetActive(false);
+        poopParticles.SetActive(false);
         animator.SetBool("IsCrying", false);
     }
     private void OnCry()
@@ -276,7 +285,6 @@ public class BabyManager : MonoBehaviour
         if (objectThrown != null)
         {
             animator.SetBool("IsThrowingObject", true);
-            //TODO animacion lanzar objeto y lanzar el objeto
             PopUpManager.instance.CreatePopUp("", Color.green, "El bebé ha tirado un objeto.");
         }
         else
@@ -307,7 +315,6 @@ public class BabyManager : MonoBehaviour
 
     void WantItem()
     {
-        //TODO incluir items deseado en la lista,
         DesiredObject = desiredObjectList[Random.Range(0, desiredObjectList.Count - 1)];
         PopUpManager.instance.CreatePopUp("", Color.green, "El bebé quiere: " + DesiredObject.name);
         Invoke("UncollectedBabyItem", 30f);
