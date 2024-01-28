@@ -133,6 +133,7 @@ public class PlayerController : MonoBehaviour
                         cartObject = hit.collider.gameObject;
                     }
                     isCartGrabbed = true;
+                    hit.transform.gameObject.GetComponentInChildren<CartManager>().CatchContent();
                     hit.transform.SetParent(cartSlot.transform);
                     hit.transform.position = cartSlot.transform.position;
                     hit.transform.rotation = cartSlot.transform.rotation;
@@ -166,6 +167,7 @@ public class PlayerController : MonoBehaviour
         if (isCartGrabbed)
         {
             cartObject.transform.SetParent(null);
+            cartObject.GetComponentInChildren<CartManager>().FreeContent();
             isCartGrabbed = false;
         }
         else { 
