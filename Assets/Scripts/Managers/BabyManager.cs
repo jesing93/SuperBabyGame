@@ -23,9 +23,11 @@ public class BabyManager : MonoBehaviour
     [SerializeField] private GameObject thirdOption;
     [SerializeField] private GameObject player;
     [SerializeField] private GameObject fadeBlack;
+    [SerializeField] private GameObject grabPoint;
     [SerializeField] private List<ProductPreset> desiredObjectList;
 
     public static BabyManager Instance;
+    private GameObject objectThrown;
     private StateMachine brain;
     private Animator animator;
     private float happiness;
@@ -270,7 +272,7 @@ public class BabyManager : MonoBehaviour
     }
     private void ThrowItem()
     {
-        GameObject objectThrown = Inventory.Instance.RemoveItemFromInventory();
+         objectThrown = Inventory.Instance.RemoveItemFromInventory();
         if (objectThrown != null)
         {
             animator.SetBool("IsThrowingObject", true);
@@ -284,7 +286,15 @@ public class BabyManager : MonoBehaviour
         }
         canThrowItem = false;
         Invoke("AvailThrowItem", 20f);
-        
+    }
+    public void GrabItem()
+    {
+        objectThrown.transform.SetParent(grabPoint.transform);
+    }
+    public void ReleaseItem()
+    {
+        objectThrown.transform.parent = null;
+        objectThrown.GetComponent<Rigidbody>().AddForce(transform.forward * 100 );
     }
     public void EndedThrowingObject()
     {
