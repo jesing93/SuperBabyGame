@@ -20,7 +20,7 @@ public class Inventory : MonoBehaviour
         List<ProductPreset> shuffledList = itemPresets.OrderBy(x => Random.value).ToList().ConvertAll(input => input as ProductPreset);
         for (int i = 0; i < shoppingListLength; i++)
         {
-            AddShoppingItem(shuffledList[i]);
+            //AddShoppingItem(shuffledList[i]);
         }
     }
 
@@ -50,7 +50,7 @@ public class Inventory : MonoBehaviour
     /// <param name="item"></param>
     public void AddItemToInventory(GameObject itemObject)
     {
-        ProductPreset item = itemObject.GetComponent<ProductPreset>();
+        ProductPreset item = itemObject.GetComponent<Product>().preset;
         if (ShoppingList.ContainsKey(item))
         {
             ShoppingItem currentItem = ShoppingList[item];
