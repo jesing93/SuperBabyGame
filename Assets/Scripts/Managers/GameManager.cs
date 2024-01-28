@@ -103,6 +103,6 @@ public class GameManager : MonoBehaviour
     }
     public void Victory()
     {
-
+        panelVictoria.SetActive(true);
     }
 }

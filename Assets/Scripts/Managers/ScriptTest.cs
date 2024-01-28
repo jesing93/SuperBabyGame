@@ -23,10 +23,7 @@ public class ScriptTest : MonoBehaviour
     {
         timeSlider.value = timeStandard;
         timeStandard -= Time.deltaTime;
-        if (timeStandard <= 0)
-        {
-            Timing();
-        }
+        
     }
     public void Timing()
     {
