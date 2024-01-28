@@ -18,6 +18,8 @@ public class PlayerController : MonoBehaviour
     public AudioClip steps;
     private CharacterController characterController;
 
+    public static PlayerController Instance;
+
     //Vars
     private float moveSpeed = 5;
     private float minXRot = -90;
@@ -35,11 +37,13 @@ public class PlayerController : MonoBehaviour
     private AudioSource audioPlayer;
 
     private bool isOnDialog;
+    private bool isPaused;
 
     public bool IsOnDialog { get => isOnDialog; set => isOnDialog = value; }
 
     private void Awake()
     {
+        Instance = this;
         CartLayer = LayerMask.GetMask("Cart");
         playerInput = new PlayerInput();
         audioPlayer = GetComponent<AudioSource>();
@@ -194,6 +198,19 @@ public class PlayerController : MonoBehaviour
         }
     }
 
+    public void TogglePause()
+    {
+        isPaused = !isPaused;
+
+        if (isPaused )
+        {
+            playerInput.Disable();
+        }
+        else
+        {
+            playerInput.Enable();
+        }
+    }
 
     private void LateUpdate()
     {
