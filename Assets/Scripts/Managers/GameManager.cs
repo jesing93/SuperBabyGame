@@ -59,6 +59,8 @@ public class GameManager : MonoBehaviour
         DOTween.Kill("CamRot", false);
         Time.timeScale = 0.0f;
         menuOptions.SetActive(false);
+        Cursor.lockState = CursorLockMode.None;
+        Cursor.visible = true;
     }
     public void Unpause()
     {
@@ -67,13 +69,17 @@ public class GameManager : MonoBehaviour
         Time.timeScale = 1.0f;
         menuPause.SetActive(false);
         menuOptions.SetActive(false);
+        Cursor.lockState = CursorLockMode.Locked;
+        Cursor.visible = false;
     }
     public void Timing()
     {
-            //Time.timeScale = 0.0f;
-            sliderPoint.SetActive(false);
-            isGameEnded = true;
-            panelDerrota.SetActive(true);
+        Time.timeScale = 0.0f;
+        sliderPoint.SetActive(false);
+        isGameEnded = true;
+        panelDerrota.SetActive(true);
+        Cursor.lockState = CursorLockMode.None;
+        Cursor.visible = true;
     }
     public void Paper()
     {
