@@ -71,17 +71,23 @@ public class PlayerController : MonoBehaviour
         {
             if (hit.collider.CompareTag("Product")) //Pick up
             {
-                if (inHand == null)
+                if (hit.collider.transform.parent.TryGetComponent<ShelvesManager>(out ShelvesManager shelve))
                 {
-                    Debug.Log("Pick Product");
-                    inHand = hit.collider.gameObject;
-                    inHand.GetComponent<Rigidbody>().isKinematic = true;
-                    inHand.transform.SetParent(handSlot.transform);
-                    inHand.transform.position = handSlot.transform.position;
-                }
-                else
-                {
-                    Debug.Log("Hands full");
+                    if (shelve.IsBusyNpc)
+                    {
+                        if (inHand == null)
+                        {
+                            Debug.Log("Pick Product");
+                            inHand = hit.collider.gameObject;
+                            inHand.GetComponent<Rigidbody>().isKinematic = true;
+                            inHand.transform.SetParent(handSlot.transform);
+                            inHand.transform.position = handSlot.transform.position;
+                        }
+                        else
+                        {
+                            Debug.Log("Hands full");
+                        }
+                    }
                 }
             }
             else if (hit.collider.CompareTag("Npc"))
