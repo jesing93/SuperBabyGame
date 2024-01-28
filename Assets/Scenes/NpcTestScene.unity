@@ -833,6 +833,10 @@ PrefabInstance:
       propertyPath: secondOption
       value: 
       objectReference: {fileID: 1501914223}
+    - target: {fileID: 3186584803266968578, guid: fd9d1ed1848f0ee4184a0a6ad7330b11, type: 3}
+      propertyPath: throwItemsChance
+      value: 100
+      objectReference: {fileID: 0}
     - target: {fileID: 5144838054870767482, guid: fd9d1ed1848f0ee4184a0a6ad7330b11, type: 3}
       propertyPath: m_LocalPosition.x
       value: -16.598854
@@ -4584,7 +4588,7 @@ Transform:
   m_GameObject: {fileID: 2117903965}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 7.34, y: 1, z: -6.01}
+  m_LocalPosition: {x: -16.02, y: 1, z: -13.41}
   m_LocalScale: {x: 0.3, y: 0.3, z: 0.3}
   m_ConstrainProportionsScale: 1
   m_Children: []

@@ -127,7 +127,7 @@ public class NpcBehaviour : MonoBehaviour
 
                 }
 
-                else if (!agent.pathPending && agent.remainingDistance < 0.1f)
+                else if (!agent.pathPending && agent.remainingDistance < 0.2f)
                 {
                     if (IsStoppedInShelve)
                     {
@@ -157,7 +157,7 @@ public class NpcBehaviour : MonoBehaviour
             //CLIENTS LOGIC
             else
             {
-                if (!agent.pathPending && agent.remainingDistance < 0.1f)
+                if (!agent.pathPending && agent.remainingDistance < 0.2f)
                 {
                     if (IsStoppedInShelve)
                     {
@@ -225,8 +225,8 @@ public class NpcBehaviour : MonoBehaviour
         nearestPoint = Vector3.one;
         int randomShelve;
         do {
-            randomShelve=(int)Random.Range(0, shelvesStopPoints.Count);
-        }while (shelvesStopPoints[randomShelve].GetComponentInParent<ShelvesManager>().IsBusyNpc && shelvesStopPoints[randomShelve].GetComponentInParent<ShelvesManager>().IsBusyPlayer) ;
+            randomShelve=(int)Random.Range(0, shelvesStopPoints.Count-1);
+        }while (shelvesStopPoints[randomShelve].GetComponentInParent<ShelvesManager>().IsBusyNpc || shelvesStopPoints[randomShelve].GetComponentInParent<ShelvesManager>().IsBusyPlayer) ;
         nearestPoint = shelvesStopPoints[randomShelve].transform.position;
         busyShelve = shelvesStopPoints[randomShelve];
         busyShelve.GetComponentInParent<ShelvesManager>().ChangeAvailavility(true);
