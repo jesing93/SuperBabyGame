@@ -27,9 +27,16 @@ public class BabyManager : MonoBehaviour
     [SerializeField] private GameObject tearParticles;
     [SerializeField] private GameObject poopParticles;
     [SerializeField] private GameObject angerParticles;
+    [SerializeField] private AudioClip angrySound;
+    [SerializeField] private AudioClip crySound;
+    [SerializeField] private AudioClip attentionSound;
+    [SerializeField] private AudioClip laugthSound;
+    [SerializeField] private AudioClip throwSound;
+    [SerializeField] private AudioClip handSound;
     [SerializeField] private List<ProductPreset> desiredObjectList;
 
     public static BabyManager Instance;
+    private AudioSource babySource;
     private GameObject objectThrown;
     private StateMachine brain;
     private Animator animator;
@@ -60,6 +67,7 @@ public class BabyManager : MonoBehaviour
         wantItemsTiming= Random.Range(45,120);
         animator= GetComponent<Animator>();
         brain.PushState(OnDefault, null, null);
+        babySource = GetComponent<AudioSource>();   
     }
 
     private void Update()
@@ -130,12 +138,15 @@ public class BabyManager : MonoBehaviour
 
     private void OnAngryExit()
     {
+        babySource.Stop();
         animator.SetBool("IsAngry", false);
         angerParticles.SetActive(false);
     }
 
     private void OnAngryEnter()
     {
+        babySource.clip = angrySound;
+        babySource.Play();
         animator.SetBool("IsAngry", true);
         angerParticles.SetActive(true);
         PopUpManager.instance.CreatePopUp("", Color.green, "El bebé esta cabreado.");
@@ -203,6 +214,8 @@ public class BabyManager : MonoBehaviour
 
     private void OnCryEnter()
     {
+        babySource.clip = crySound;
+        babySource.Play();
         animator.SetBool("IsCrying", true);
         tearParticles.SetActive(true);
         poopParticles.SetActive(true);
@@ -210,6 +223,7 @@ public class BabyManager : MonoBehaviour
     }
     private void OnCryExit()
     {
+        babySource.Stop();
         tearParticles.SetActive(false);
         poopParticles.SetActive(false);
         animator.SetBool("IsCrying", false);
@@ -223,10 +237,13 @@ public class BabyManager : MonoBehaviour
     }
     private void OnVeryHappyExit()
     {
+        babySource.Stop();
         animator.SetBool("IsVeryHappy",false);
     }
     private void OnVeryHappyEnter()
     {
+        babySource.clip = laugthSound;
+        babySource.Play();
         animator.SetBool("IsVeryHappy", true);
     }
 
@@ -238,17 +255,20 @@ public class BabyManager : MonoBehaviour
     }
     private void OnHappyExit()
     {
+        babySource.Stop();
         animator.SetBool("IsHappy", false);
     }
 
     private void OnHappyEnter()
     {
+        babySource.clip = handSound;
+        babySource.Play();
         animator.SetBool("IsHappy", true);
     }
 
     private void OnHappy()
     {
-        //TODO sonido feliz
+        
         if (Happiness < 60 || Happiness > 80)
             SelectState();
     }
@@ -286,7 +306,6 @@ public class BabyManager : MonoBehaviour
         thirdOption.GetComponentInChildren<TMP_Text>().text = "";
         secondOption.SetActive(false);
         thirdOption.SetActive(false);
-        //TODO sonido cambiar pañal 
         if (toiletNeed < 100)
         {
             npcPhrase.GetComponent<TMP_Text>().text = "El bebe está limpio";
@@ -303,11 +322,14 @@ public class BabyManager : MonoBehaviour
     }
     private void ThrowItem()
     {
+       
          objectThrown = Inventory.Instance.RemoveItemFromInventory();
         if (objectThrown != null)
         {
             animator.SetBool("IsThrowingObject", true);
             PopUpManager.instance.CreatePopUp("", Color.green, "El bebé ha tirado un objeto.");
+            babySource.clip = throwSound;
+            babySource.Play();
         }
         else
         {
@@ -338,12 +360,17 @@ public class BabyManager : MonoBehaviour
 
     void WantItem()
     {
+        babySource.clip = attentionSound;
+        babySource.Play();
+        animator.SetBool("WantObject", true);
         DesiredObject = desiredObjectList[Random.Range(0, desiredObjectList.Count - 1)];
         PopUpManager.instance.CreatePopUp("", Color.green, "El bebé quiere: " + DesiredObject.name);
         Invoke("UncollectedBabyItem", 30f);
     }
     public void UncollectedBabyItem()
     {
+        babySource.Stop();
+        animator.SetBool("WantObject", false);
         if (DesiredObject != null) {
             if (happiness - 20 <= 0)
             {
@@ -359,6 +386,8 @@ public class BabyManager : MonoBehaviour
     }
     public void CollectedBabyItem()
     {
+        babySource.Stop();
+        animator.SetBool("WantObject", false);
         if (DesiredObject != null)
         {
             happiness += entertainHappinessIncrease;
