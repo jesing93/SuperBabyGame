@@ -10,8 +10,8 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 1da3e49da1615904f9bb6ec260eeb675, type: 3}
-  m_Name: Chuleta
+  m_Name: CepilloDientes
   m_EditorClassIdentifier: 
-  type: 2
-  productName: Chuleta
+  type: 10
+  productName: Cepillo de dientes
   isHeavy: 0

@@ -10,9 +10,8 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 1da3e49da1615904f9bb6ec260eeb675, type: 3}
-  m_Name: Jamon
+  m_Name: Estropajo
   m_EditorClassIdentifier: 
-  type: 0
-  productName: "Jam\xF3n"
-  isHeavy: 1
-  model: {fileID: 4093848092148216782, guid: 807fcec5d7cb3344cb283ae2f7929d33, type: 3}
+  type: 13
+  productName: Estropajp
+  isHeavy: 0
