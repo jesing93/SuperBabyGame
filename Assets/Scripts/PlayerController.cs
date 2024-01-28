@@ -14,6 +14,8 @@ public class PlayerController : MonoBehaviour
     public GameObject playerHead;
     public GameObject handSlot;
     public GameObject cartSlot;
+    public AudioClip pickSound;
+    public AudioClip steps;
 
     //Vars
     private float moveSpeed = 5;
@@ -29,6 +31,7 @@ public class PlayerController : MonoBehaviour
     private GameObject inHand = null;
     private bool isCartGrabbed = false;
     private GameObject cartObject;
+    private AudioSource audioPlayer;
 
     private bool isOnDialog;
 
@@ -38,7 +41,7 @@ public class PlayerController : MonoBehaviour
     {
         CartLayer = LayerMask.GetMask("Cart");
         playerInput = new PlayerInput();
-
+        audioPlayer=GetComponent<AudioSource>();
         //Assign this function to the input event
         playerInput.Character.Move.performed += ctx => Move(ctx);
         playerInput.Character.Move.canceled += ctx => Move(ctx);
@@ -156,6 +159,8 @@ public class PlayerController : MonoBehaviour
     /// <param name="item"></param>
     private void PickUp(GameObject item)
     {
+        audioPlayer.clip = pickSound;
+        audioPlayer.Play();
         inHand = item;
         inHand.GetComponent<Rigidbody>().isKinematic = true;
         inHand.transform.SetParent(handSlot.transform);
@@ -208,7 +213,15 @@ public class PlayerController : MonoBehaviour
 
             Vector3 dir = forward * moveInput.y + right * moveInput.x;
             dir.Normalize();
-
+            if(dir!= Vector3.zero)
+            {
+                audioPlayer.Play();
+                audioPlayer.clip = steps;
+            }
+            else
+            {
+                audioPlayer.Stop();
+            }
             //Actual movement
             dir *= moveSpeed * Time.deltaTime;
             transform.position += dir;
